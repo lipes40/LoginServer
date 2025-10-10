@@ -7,6 +7,8 @@
 
     $error = '';
 
+    $cont = 0;
+
     $texto = $_SESSION["lista"];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -199,6 +201,18 @@
             width: 100%;
         }
 
+        .items{
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .numerador{
+            margin-top: 5px;
+            margin-right: 10px;
+        }
+
         .btns-out{
             justify-content: center;
             margin-top: 10px;
@@ -247,8 +261,13 @@
                     $tamanho = count($lista) -1;
                     $lista[$tamanho] = str_replace('"', "", $lista[$tamanho]);
                     
-                    foreach($lista as $item): ?>
-                    <input type="text" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?> ">
+                    foreach($lista as $item): 
+                    ?>
+                    <div class="items">
+                    <p class="numerador"><?php $cont ++;
+                    echo $cont ?></p>
+                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?> ">
+                    </div>
                     <?php endforeach ?>
 
                     
