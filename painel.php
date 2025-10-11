@@ -80,7 +80,6 @@
             height: 50px;
             width: 200px;
             border-radius: 15px;
-            /* bottom: 0; */
             margin-bottom: 10px;
             transition: 0.2s;
             cursor: pointer;
@@ -185,6 +184,7 @@
             background-color: #111111;
             color: white;
             border: none;
+            font-size: medium;
             margin-top: 5px;
             display: flex;
             width: 90%;
