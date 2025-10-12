@@ -60,15 +60,22 @@
             background-color: #111111;
         }
 
+        a{
+            margin: 0;
+            padding: 0;
+        }
+
         header{
             display: flex;
             justify-content: center;
             max-height: 60px;
             position: relative;
+            align-items: center;
         }
 
         h1{
             color: white;
+            text-align: right;
             font-family: Arial, Helvetica, sans-serif;
         }
 
@@ -127,14 +134,15 @@
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             position: absolute; 
-            margin-top: 20px;
-            right: 20px;
+            left: 20px;
             align-items: center;
+            align-self: center;
             justify-content: center;
             background-color: #8A2BE2;
             color: white;
             border: none;
             width: 15%;
+            min-width: 40px;
             height: 30px;
             cursor: pointer;
             border-radius: 20px;
@@ -158,10 +166,6 @@
         }
 
         @media (max-width: 600px) {
-            header{
-                justify-content: space-between;
-            }
-
             input{
                 width: 70%;
             }
@@ -171,7 +175,21 @@
             }
 
             .button-log{
-                height: 100%;
+                align-items: center;
+                justify-content: center;
+                display: inline-flex;
+                left: 0;
+                margin-top: 5px;
+                position: relative;
+                max-height: 3%;
+                width: 20%;
+                padding-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            h1{
+                font-size: 150%;
             }
         }
 
@@ -179,10 +197,10 @@
 </head>
 <body>
     <header>
-        <h1>Mude sua senha!</h1>
         <a href="painel.php">
-        <button class="button-log">Voltar ao painel</button>
+        <button id="voltar" class="button-log">Voltar ao painel</button>
         </a>
+        <h1>Mude sua senha!</h1>
     </header>
 
         <form action="" method="POST">
@@ -203,8 +221,16 @@
 
 </body>
 <script>
-    const senha = document.getElementById("senha")
-    const newSenha = document.getElementById("newSenha")
-    const reSenha = document.getElementById("reSenha")
+    const voltar = document.getElementById("voltar")
+
+    if (window.innerWidth <= 600) {
+        voltar.innerText = "⬅";
+        voltar.style.fontSize = '250%'
+    }
+
+    else{
+        voltar.innerText = "Voltar ao painel";
+    }
+    
 </script>
 </html>

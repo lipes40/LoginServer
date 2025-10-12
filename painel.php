@@ -136,7 +136,8 @@
             flex-direction: row;
         }
 
-        .mostrar{
+        .mostrar{   
+            height: 70%;
             margin-right: 20px;
             cursor: pointer;
         }
@@ -217,6 +218,25 @@
             justify-content: center;
             margin-top: 10px;
             display: flex;
+        }
+
+        @media (max-width: 600px) {
+            .btns-out{
+                flex-direction: column;
+                align-items: center;
+            }
+
+            input{
+                font-size: large;
+            }
+
+            h1{
+                font-size: medium;
+            }
+
+            .mostrar{
+                margin: 5px;
+            }
         }
 
     </style>

@@ -60,6 +60,7 @@
         header{
             margin-top: 50px;
             display: flex;
+            text-align: center;
             flex-direction: column;
             align-items: center;
         }
