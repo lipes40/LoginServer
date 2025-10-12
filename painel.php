@@ -14,6 +14,8 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $lista = $_POST["items"];
 
+        $lista = array_map('trim', $lista);
+
         $texto = implode(",", $lista);
 
         $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
@@ -134,6 +136,7 @@
             width: 100%;
             display: flex;
             flex-direction: row;
+
         }
 
         .mostrar{   
@@ -221,6 +224,11 @@
             display: flex;
         }
 
+        .salvar{
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
         @media (max-width: 600px) {
             .btns-out{
                 flex-direction: column;
@@ -288,7 +296,7 @@
                     <div class="items">
                     <p class="numerador"><?php $cont ++;
                     echo $cont ?></p>
-                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?> ">
+                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                     </div>
                     <?php endforeach ?>
 
