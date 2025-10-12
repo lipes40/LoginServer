@@ -1,5 +1,13 @@
 <?php
 
+session_start();
+
+if(isset($_SESSION['id'])) {
+    header("Location: painel.php");
+    exit;
+}
+
+
     require('connector.php');
 
     $error = '';

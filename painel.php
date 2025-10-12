@@ -205,6 +205,7 @@
         .items{
             display: flex;
             width: 100%;
+            margin-top: 5px;
             align-items: center;
             justify-content: center;
         }
@@ -277,16 +278,17 @@
                     <?php 
 
                     $lista = explode(",", $texto);
-                    $lista[0] = str_replace('"', "", $lista[0]);
+                    $lista[0] = substr($lista[0], 0 );
                     $tamanho = count($lista) -1;
-                    $lista[$tamanho] = str_replace('"', "", $lista[$tamanho]);
+                    $lista[$tamanho] = substr($lista[$tamanho], 0, -1);
+
                     
                     foreach($lista as $item): 
                     ?>
                     <div class="items">
                     <p class="numerador"><?php $cont ++;
                     echo $cont ?></p>
-                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?> ">
+                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim(substr($item, 0, -1)));}?> ">
                     </div>
                     <?php endforeach ?>
 
