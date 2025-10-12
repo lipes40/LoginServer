@@ -27,10 +27,11 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     else{
 
         $lista = json_encode("Adicione ou escreva algo");
+        $bloco = "";
 
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, lista) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, lista, bloco) VALUES (?, ?, ?, ?, ?)");
 
-        $stmt->execute([$nome, $email, $criptoSenha, $lista]);
+        $stmt->execute([$nome, $email, $criptoSenha, $lista, $bloco]);
 
 
         header("Location: index.php");

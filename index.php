@@ -48,6 +48,7 @@ if(isset($_SESSION['id'])) {
                     $_SESSION['email'] = $usuario['email'];
                     $_SESSION['senha'] = $usuario['senha'];
                     $_SESSION['lista'] = substr($usuario['lista'], 1, -1);
+                    $_SESSION['bloco'] = $usuario['bloco'];
 
                     header("Location: painel.php");
 

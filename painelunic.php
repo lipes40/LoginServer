@@ -9,19 +9,20 @@
 
     $cont = 0;
 
-    $texto = $_SESSION["lista"];
+    echo $_SESSION["bloco"];
+
+    $lista = $_SESSION["bloco"];
+
+    // $lista = "";
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $lista = $_POST["items"];
 
-        $lista = array_map('trim', $lista);
+        echo gettype($lista) . $lista;
 
-        $texto = implode(",", $lista);
+        $stmt = $pdo->prepare("UPDATE usuarios SET bloco = ? WHERE id = ?");
 
-        $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
-
-        $stmt = $pdo->prepare("UPDATE usuarios SET lista = ? WHERE id = ?");
-        $stmt->execute([$json, $_SESSION["id"]]);
+        $stmt->execute([$lista, $_SESSION["id"]]);
     }
 ?>
 
@@ -184,7 +185,7 @@
             margin-top: 30px;
         }
 
-        input {
+        textarea {
             background-color: #111111;
             color: white;
             border: none;
@@ -192,7 +193,7 @@
             margin-top: 5px;
             display: flex;
             width: 90%;
-            height: 100%;
+            height: 500px;
         }
 
         .inputs-container{
@@ -224,12 +225,8 @@
             display: flex;
         }
 
-        .salvar{
+        .add{
             margin-left: 5px;
-            margin-right: 5px;
-        }
-
-        .bloco{
             margin-right: 5px;
         }
 
@@ -287,26 +284,14 @@
         <form method="post" action="">
             <div class="inputs-container">
                 <div id="inputs-container" class="inputs-container">
-                    <?php 
-
-                    $lista = explode(",", $texto);
-                    
-                    foreach($lista as $item): 
-                    ?>
                     <div class="items">
-                    <p class="numerador"><?php $cont ++;
-                    echo $cont ?></p>
-                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
+                    <textarea type="text" placeholder="adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
                     </div>
-                    <?php endforeach ?>
-
-                    
                 </div>
                 <div class="btns-out">
-                    <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
                     <button class="salvar" type="submit">Salvar</button>
-                    <a href="painelunic.php">
-                        <button class="bloco" type="button">Ir para Bloco</button>
+                    <a href="painel.php">
+                    <button type="button" class="add" id="adicionar">Voltar para Linhas</button>
                     </a>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
                 </div>
@@ -336,17 +321,6 @@
         }
 
     }
-
-    const container = document.getElementById('inputs-container');
-    const btnAdicionar = document.getElementById('adicionar')
-
-    btnAdicionar.addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.name = 'items[]';
-        input.placeholder = 'adicione algo'
-        container.appendChild(input);
-    });
 
 </script>
 </html>
