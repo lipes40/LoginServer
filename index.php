@@ -47,7 +47,7 @@ if(isset($_SESSION['id'])) {
                     $_SESSION['nome'] = $usuario['nome'];
                     $_SESSION['email'] = $usuario['email'];
                     $_SESSION['senha'] = $usuario['senha'];
-                    $_SESSION['lista'] = $usuario['lista'];
+                    $_SESSION['lista'] = substr($usuario['lista'], 1, -1);
 
                     header("Location: painel.php");
 

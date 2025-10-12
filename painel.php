@@ -286,10 +286,6 @@
                     <?php 
 
                     $lista = explode(",", $texto);
-                    $lista[0] = substr($lista[0], 0 );
-                    $tamanho = count($lista) -1;
-                    $lista[$tamanho] = substr($lista[$tamanho], 0, -1);
-
                     
                     foreach($lista as $item): 
                     ?>
@@ -303,7 +299,7 @@
                     
                 </div>
                 <div class="btns-out">
-                    <button type="button" class="add" id="adicionar">Adicionar Linha</button>
+                    <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
                     <button class="salvar" type="submit">Salvar</button>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
                 </div>
