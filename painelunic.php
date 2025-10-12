@@ -9,7 +9,7 @@
 
     $cont = 0;
 
-    echo $_SESSION["bloco"];
+    // echo $_SESSION["bloco"];
 
     $lista = $_SESSION["bloco"];
 
@@ -18,7 +18,7 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $lista = $_POST["items"];
 
-        echo gettype($lista) . $lista;
+        // echo gettype($lista) . $lista;
 
         $stmt = $pdo->prepare("UPDATE usuarios SET bloco = ? WHERE id = ?");
 
