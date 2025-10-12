@@ -288,7 +288,7 @@
                     <div class="items">
                     <p class="numerador"><?php $cont ++;
                     echo $cont ?></p>
-                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim(substr($item, 0, -1)));}?> ">
+                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?> ">
                     </div>
                     <?php endforeach ?>
 
