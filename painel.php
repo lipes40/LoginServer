@@ -2,6 +2,13 @@
     require ('protect.php');
     require ('connector.php');
 
+    $sql = "SELECT lista FROM usuarios WHERE email = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$_SESSION['email']]);
+
+    $resultado = $stmt->fetch();
+
+    $_SESSION['lista'] = substr($resultado[0], 1, -1);
 
     $mostrar = true;
 
@@ -233,6 +240,25 @@
             margin-right: 5px;
         }
 
+        .deletar{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            background: none;
+            width: 50px;
+            height: 50px;
+            margin: 0;
+        }
+
+        .deletar:hover{
+            background: none;
+        }
+
+        .icon-lixeira{
+            width: 17px;
+        }
+
         @media (max-width: 600px) {
             .btns-out{
                 flex-direction: column;
@@ -256,10 +282,9 @@
 
 </head>
 <body class="principal">
-
     <header>
-    <h1>Sejá bem vindo ao Painel</h1> 
-    <button class="mostrar" onclick="mostra()">Minhas informações</button>
+        <h1>Sejá bem vindo ao Painel</h1> 
+        <button class="mostrar" onclick="mostra()">Minhas informações</button>
     </header>
 
     <div class="conjunto">
@@ -273,13 +298,13 @@
 
             <div class="buttons">
 
-            <a class="btn-morte" href="deletar_conta.php">
-                <img src="img/lixeira.png">deletar conta
-            </a>
+                <a class="btn-morte" href="deletar_conta.php">
+                    <img src="img/lixeira.png">deletar conta
+                </a>
 
-            <a class="btn-senha" href="muda_senha.php">
-                Mudar senha
-            </a>
+                <a class="btn-senha" href="muda_senha.php">
+                    Mudar senha
+                </a>
             </div>
             
         </div>
@@ -294,19 +319,19 @@
                     foreach($lista as $item): 
                     ?>
                     <div class="items">
-                    <p class="numerador"><?php $cont ++;
-                    echo $cont ?></p>
-                    <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
+                        <p class="numerador"><?php $cont ++;
+                        echo $cont ?></p>
+                        <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
+                        <button type="submit" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                     </div>
                     <?php endforeach ?>
-
                     
                 </div>
                 <div class="btns-out">
                     <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
                     <button class="salvar" type="submit">Salvar</button>
                     <a href="painelunic.php">
-                        <button class="bloco" type="button">Ir para Bloco</button>
+                        <button type="button" id="deletar" class="bloco" type="button">Ir para Bloco</button>
                     </a>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
                 </div>
@@ -339,14 +364,23 @@
 
     const container = document.getElementById('inputs-container');
     const btnAdicionar = document.getElementById('adicionar')
+    const btnDeletar = document.getElementById('deletar')
 
     btnAdicionar.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'text';
         input.name = 'items[]';
-        input.placeholder = 'adicione algo'
+        input.placeholder = 'Adicione algo'
         container.appendChild(input);
     });
+
+    container.addEventListener('click', (event) => {
+  const botao = event.target.closest('.deletar');
+  if (botao) {
+    botao.parentElement.remove();
+
+  }
+});
 
 </script>
 </html>

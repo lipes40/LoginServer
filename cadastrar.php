@@ -79,8 +79,8 @@
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             position: absolute; 
-            margin-top: 20px;
-            right: 20px;
+            margin-top: 30px;
+            left: 20px;
             align-items: center;
             justify-content: center;
             background-color: #8A2BE2;
@@ -122,7 +122,12 @@
             }
 
             header{
-                justify-content: space-between;
+                justify-content: center;
+            }
+
+            .button-log{
+                width: 15%;
+                left: 0;
             }
         }
     </style>
@@ -130,10 +135,10 @@
 <body>
 
     <header>
-        <h1>Crie sua conta!</h1>
         <a href="index.php">
         <button class="button-log">Fazer login</button>
         </a>
+        <h1>Crie sua conta!</h1>
     </header>
     
     <form id="formCadastro" action="cria_usuario.php" method="POST" onsubmit="return enviar()">

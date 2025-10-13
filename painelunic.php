@@ -2,6 +2,13 @@
     require ('protect.php');
     require ('connector.php');
 
+    $sql = "SELECT bloco FROM usuarios WHERE email = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$_SESSION['email']]);
+
+    $resultado = $stmt->fetch();
+
+    $_SESSION['bloco'] = $resultado[0];
 
     $mostrar = true;
 
@@ -285,7 +292,7 @@
             <div class="inputs-container">
                 <div id="inputs-container" class="inputs-container">
                     <div class="items">
-                    <textarea type="text" placeholder="adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
+                    <textarea type="text" placeholder="Adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
                     </div>
                 </div>
                 <div class="btns-out">

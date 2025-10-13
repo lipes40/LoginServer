@@ -1,70 +1,68 @@
 <?php
 
-session_start();
+    session_start();
 
-if(isset($_SESSION['id'])) {
-    header("Location: painel.php");
-    exit;
-}
+    if(isset($_SESSION['id'])) {
+        header("Location: painel.php");
+        exit;
+    }
 
 
-    require('connector.php');
+        require('connector.php');
 
-    $error = '';
+        $error = '';
 
-    if(isset($_POST['email']) && isset($_POST['senha'])) {
+        if(isset($_POST['email']) && isset($_POST['senha'])) {
 
-        if(strlen($_POST['email']) == 0) {
-            $error = "Preencha seu email!";
-        }
-        elseif (strlen($_POST['senha']) == 0) {
-            $error = "Preencha sua senha!";
-        }
-        else{
+            if(strlen($_POST['email']) == 0) {
+                $error = "Preencha seu email!";
+            }
+            elseif (strlen($_POST['senha']) == 0) {
+                $error = "Preencha sua senha!";
+            }
+            else{
 
-            $email = $_POST['email'];
-            $senha = $_POST['senha'];
+                $email = $_POST['email'];
+                $senha = $_POST['senha'];
 
-            $sql = "SELECT * FROM usuarios WHERE email = ?";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$email]);
+                $sql = "SELECT * FROM usuarios WHERE email = ?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$email]);
 
-            $usuario = $stmt->fetch();
+                $usuario = $stmt->fetch();
 
-            
-            
-            if($usuario) {
+                
+                
+                if($usuario) {
 
-                $verify = password_verify($senha, $usuario['senha']);
+                    $verify = password_verify($senha, $usuario['senha']);
 
-                if($verify) {
+                    if($verify) {
 
-                    if(!isset($_SESSION)) {
-                        session_start();
+                        if(!isset($_SESSION)) {
+                            session_start();
+                        }
+
+                        $_SESSION['id'] = $usuario['id'];
+                        $_SESSION['nome'] = $usuario['nome'];
+                        $_SESSION['email'] = $usuario['email'];
+                        $_SESSION['senha'] = $usuario['senha'];
+
+                        header("Location: painel.php");
+
+                        exit;
+                    }
+                    else{
+                        $error = "Falha ao logar! email ou senha incorretos!";
                     }
 
-                    $_SESSION['id'] = $usuario['id'];
-                    $_SESSION['nome'] = $usuario['nome'];
-                    $_SESSION['email'] = $usuario['email'];
-                    $_SESSION['senha'] = $usuario['senha'];
-                    $_SESSION['lista'] = substr($usuario['lista'], 1, -1);
-                    $_SESSION['bloco'] = $usuario['bloco'];
-
-                    header("Location: painel.php");
-
-                    exit;
-                }
-                else{
-                    $error = "Falha ao logar! email ou senha incorretos!";
-                }
-
-            }   else{
-                    $error = "Falha ao logar! email ou senha incorretos!";
-                }
+                }   else{
+                        $error = "Falha ao logar! email ou senha incorretos!";
+                    }
+                
             
-        
+            }
         }
-    }
 ?>
 
 <!DOCTYPE html>
