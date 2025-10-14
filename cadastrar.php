@@ -15,6 +15,7 @@
         header{
             display: flex;
             justify-content: center;
+            align-items: center;
             max-height: 60px;
             position: relative;
         }
@@ -73,13 +74,15 @@
 
         a{
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .button-log{
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             position: absolute; 
-            margin-top: 30px;
             left: 20px;
             align-items: center;
             justify-content: center;
