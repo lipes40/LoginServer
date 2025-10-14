@@ -8,7 +8,7 @@
 
     $resultado = $stmt->fetch();
 
-    $_SESSION['lista'] = substr($resultado[0], 1, -1);
+    $_SESSION['lista'] = $resultado[0];//substr($resultado[0], 1, -1);
 
     $mostrar = true;
 
@@ -25,10 +25,12 @@
 
         $texto = implode(",", $lista);
 
-        $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
+        echo $texto;
+
+        // $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
 
         $stmt = $pdo->prepare("UPDATE usuarios SET lista = ? WHERE id = ?");
-        $stmt->execute([$json, $_SESSION["id"]]);
+        $stmt->execute([$texto, $_SESSION["id"]]);
     }
 ?>
 
