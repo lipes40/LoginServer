@@ -277,6 +277,11 @@
             .mostrar{
                 margin: 5px;
             }
+
+            .deletar{
+                width: 40px;
+                height: 40px;
+            }
         }
 
     </style>
