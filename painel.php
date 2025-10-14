@@ -267,6 +267,7 @@
 
             input{
                 font-size: large;
+                width: 80%;
             }
 
             h1{
