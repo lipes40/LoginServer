@@ -25,8 +25,6 @@
 
         $texto = implode(",", $lista);
 
-        echo $texto;
-
         // $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
 
         $stmt = $pdo->prepare("UPDATE usuarios SET lista = ? WHERE id = ?");
