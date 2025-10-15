@@ -14,6 +14,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = $_POST['c-nome'];
     $email = $_POST['c-email'];
     $senha = $_POST['c-senha'];
+    if (!str_contains($email, "@") or !str_contains($email, ".") or strlen($senha) < 6){
+        die("Error html alterado");
+    }
 
     $criptoSenha = password_hash($senha, PASSWORD_DEFAULT);
 

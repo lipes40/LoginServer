@@ -185,6 +185,7 @@
             alert("Preencha seu email!");
             return false;
         }
+
         if(senha.value.length == 0) {
             alert("Preencha a senha!");
             return false;
@@ -206,7 +207,12 @@
         }
 
         if(senha.value != reSenha.value) {
-            alert("suas senhas estão Diferentes!");
+            alert("Suas senhas estão Diferentes!");
+            return false;
+        }
+
+        if (!email.value.includes("@") || !email.value.includes(".")) {
+            alert("O Campo de email deve ser preenchido corretamente");
             return false;
         }
 
