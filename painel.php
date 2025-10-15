@@ -341,7 +341,7 @@
                 <div class="btns-out">
                     <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
                     <button class="salvar" type="submit">Salvar</button>
-                    <a href="painelunic.php">
+                    <a href="painelbloco.php">
                         <button type="button" id="deletar" class="bloco" type="button">Ir para Bloco</button>
                     </a>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
