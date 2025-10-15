@@ -1,6 +1,7 @@
 <?php
     require ('protect.php');
     require ('connector.php');
+    require ('cripto.php');
 
     $sql = "SELECT lista FROM usuarios WHERE email = ?";
     $stmt = $pdo->prepare($sql);
@@ -9,6 +10,8 @@
     $resultado = $stmt->fetch();
 
     $_SESSION['lista'] = $resultado[0];//substr($resultado[0], 1, -1);
+
+    $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
 
     $mostrar = true;
 
@@ -25,10 +28,12 @@
 
         $texto = implode(",", $lista);
 
+        $cripto = encrypt_aes_gcm($texto, $_SESSION['senha']);
+
         // $json = json_encode($texto, JSON_UNESCAPED_UNICODE);
 
         $stmt = $pdo->prepare("UPDATE usuarios SET lista = ? WHERE id = ?");
-        $stmt->execute([$texto, $_SESSION["id"]]);
+        $stmt->execute([$cripto, $_SESSION["id"]]);
     }
 ?>
 
@@ -328,7 +333,7 @@
                         <p class="numerador"><?php $cont ++;
                         echo $cont ?></p>
                         <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
-                        <button type="submit" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+                        <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                     </div>
                     <?php endforeach ?>
                     

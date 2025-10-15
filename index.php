@@ -1,5 +1,7 @@
 <?php
 
+    require('connector.php');
+
     session_start();
 
     if(isset($_SESSION['id'])) {
@@ -7,62 +9,59 @@
         exit;
     }
 
+    $error = '';
 
-        require('connector.php');
+    if(isset($_POST['email']) && isset($_POST['senha'])) {
 
-        $error = '';
-
-        if(isset($_POST['email']) && isset($_POST['senha'])) {
-
-            if(strlen($_POST['email']) == 0) {
-                $error = "Preencha seu email!";
-            }
-            elseif (strlen($_POST['senha']) == 0) {
-                $error = "Preencha sua senha!";
-            }
-            else{
-
-                $email = $_POST['email'];
-                $senha = $_POST['senha'];
-
-                $sql = "SELECT * FROM usuarios WHERE email = ?";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$email]);
-
-                $usuario = $stmt->fetch();
-
-                
-                
-                if($usuario) {
-
-                    $verify = password_verify($senha, $usuario['senha']);
-
-                    if($verify) {
-
-                        if(!isset($_SESSION)) {
-                            session_start();
-                        }
-
-                        $_SESSION['id'] = $usuario['id'];
-                        $_SESSION['nome'] = $usuario['nome'];
-                        $_SESSION['email'] = $usuario['email'];
-                        $_SESSION['senha'] = $usuario['senha'];
-
-                        header("Location: painel.php");
-
-                        exit;
-                    }
-                    else{
-                        $error = "Falha ao logar! email ou senha incorretos!";
-                    }
-
-                }   else{
-                        $error = "Falha ao logar! email ou senha incorretos!";
-                    }
-                
-            
-            }
+        if(strlen($_POST['email']) == 0) {
+            $error = "Preencha seu email!";
         }
+        elseif (strlen($_POST['senha']) == 0) {
+            $error = "Preencha sua senha!";
+        }
+        else{
+
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
+
+            $sql = "SELECT * FROM usuarios WHERE email = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$email]);
+
+            $usuario = $stmt->fetch();
+
+            
+            
+            if($usuario) {
+
+                $verify = password_verify($senha, $usuario['senha']);
+
+                if($verify) {
+
+                    if(!isset($_SESSION)) {
+                        session_start();
+                    }
+
+                    $_SESSION['id'] = $usuario['id'];
+                    $_SESSION['nome'] = $usuario['nome'];
+                    $_SESSION['email'] = $usuario['email'];
+                    $_SESSION['senha'] = $senha;
+
+                    header("Location: painel.php");
+
+                    exit;
+                }
+                else{
+                    $error = "Falha ao logar! email ou senha incorretos!";
+                }
+
+            }   else{
+                    $error = "Falha ao logar! email ou senha incorretos!";
+                }
+            
+        
+        }
+    }
 ?>
 
 <!DOCTYPE html>

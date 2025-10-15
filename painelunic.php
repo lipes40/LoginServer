@@ -1,6 +1,7 @@
 <?php
     require ('protect.php');
     require ('connector.php');
+    require ('cripto.php');
 
     $sql = "SELECT bloco FROM usuarios WHERE email = ?";
     $stmt = $pdo->prepare($sql);
@@ -10,26 +11,31 @@
 
     $_SESSION['bloco'] = $resultado[0];
 
+    $_SESSION['bloco'] = decrypt_aes_gcm($_SESSION['bloco'], $_SESSION['senha']);
+
     $mostrar = true;
 
     $error = '';
 
     $cont = 0;
 
+    $lista = $_SESSION['bloco'];
+
     // echo $_SESSION["bloco"];
-
-    $lista = $_SESSION["bloco"];
-
     // $lista = "";
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $lista = $_POST["items"];
+
+        $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
 
         // echo gettype($lista) . $lista;
 
         $stmt = $pdo->prepare("UPDATE usuarios SET bloco = ? WHERE id = ?");
 
         $stmt->execute([$lista, $_SESSION["id"]]);
+
+        $lista = decrypt_aes_gcm($lista, $_SESSION['senha']);
     }
 ?>
 
