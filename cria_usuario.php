@@ -32,10 +32,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         $lista = "";
         $bloco = "";
 
-        $stmt = $pdo->prepare("SELECT id FROM usuarios");
+        $stmt = $pdo->prepare("SELECT MAX(id) FROM usuarios");
         $stmt->execute();
-        $id = max($stmt->fetch()) +1;
-        
+        $id = $stmt->fetch()[0]+1;
 
         $stmt = $pdo->prepare("INSERT INTO usuarios (id, nome, email, senha, lista, bloco) VALUES (?, ?, ?, ?, ?, ?)");
 
