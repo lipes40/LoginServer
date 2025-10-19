@@ -19,6 +19,10 @@
 
     $cont = 0;
 
+    if ($_SESSION['lista'] === Null){
+        $_SESSION['lista'] = "";
+    }
+
     $texto = $_SESSION["lista"];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){

@@ -46,6 +46,7 @@
                     $_SESSION['nome'] = $usuario['nome'];
                     $_SESSION['email'] = $usuario['email'];
                     $_SESSION['senha'] = $senha;
+                    $_SESSION["cripto_senha"] = $usuario['senha'];
 
                     header("Location: painel.php");
 

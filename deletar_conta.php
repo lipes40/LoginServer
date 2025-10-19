@@ -20,7 +20,7 @@
             $error = "Digite o texto de verificação";
         }
 
-        elseif(!password_verify($senha, $_SESSION['senha'])){
+        elseif(!password_verify($senha, $_SESSION['cripto_senha'])){
             $error = "Senha errada";
         }
 
