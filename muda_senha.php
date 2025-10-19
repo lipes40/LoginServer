@@ -36,7 +36,7 @@
             $error = "Suas novas senhas estão diferentes!";
         }
 
-        elseif(password_verify($senha, $_SESSION['senha'])) {
+        elseif(password_verify($senha, $_SESSION['cripto_senha'])) {
             $stmt = $pdo->prepare("UPDATE usuarios SET senha = ? WHERE id = ?");
             $stmt->execute([$criptoSenha, $_SESSION['id']]);
 
