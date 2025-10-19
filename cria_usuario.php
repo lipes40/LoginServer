@@ -29,12 +29,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     else{
 
-        $lista = json_encode("Adicione ou escreva algo");
+        $lista = "";
         $bloco = "";
 
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, lista, bloco) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("SELECT id FROM usuarios");
+        $stmt->execute();
+        $id = max($stmt->fetch()) +1;
+        
 
-        $stmt->execute([$nome, $email, $criptoSenha, $lista, $bloco]);
+        $stmt = $pdo->prepare("INSERT INTO usuarios (id, nome, email, senha, lista, bloco) VALUES (?, ?, ?, ?, ?, ?)");
+
+        $stmt->execute([$id, $nome, $email, $criptoSenha, $lista, $bloco]);
 
 
         header("Location: index.php");

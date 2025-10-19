@@ -11,7 +11,12 @@
 
     $_SESSION['bloco'] = $resultado[0];
 
-    $_SESSION['bloco'] = decrypt_aes_gcm($_SESSION['bloco'], $_SESSION['senha']);
+    if($_SESSION['bloco'] == null){
+        $_SESSION['bloco'] = "";
+    }
+    else{
+        $_SESSION['bloco'] = decrypt_aes_gcm($_SESSION['bloco'], $_SESSION['senha']);
+    }
 
     $mostrar = true;
 
@@ -202,7 +207,7 @@
             background-color: #111111;
             color: white;
             border: none;
-            font-size: medium;
+            font-size: large;
             margin-top: 5px;
             display: flex;
             width: 90%;

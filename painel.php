@@ -9,19 +9,17 @@
 
     $resultado = $stmt->fetch();
 
-    $_SESSION['lista'] = $resultado[0];//substr($resultado[0], 1, -1);
+    $_SESSION['lista'] = $resultado[0];
 
-    $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
+    if (!$_SESSION['lista'] === ""){
+        $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
+    }
 
     $mostrar = true;
 
     $error = '';
 
     $cont = 0;
-
-    if ($_SESSION['lista'] === Null){
-        $_SESSION['lista'] = "";
-    }
 
     $texto = $_SESSION["lista"];
 
@@ -204,7 +202,7 @@
             background-color: #111111;
             color: white;
             border: none;
-            font-size: medium;
+            font-size: large;
             margin-top: 5px;
             display: flex;
             width: 90%;
