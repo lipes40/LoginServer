@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
+    <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
