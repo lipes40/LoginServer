@@ -11,9 +11,7 @@
 
     $_SESSION['lista'] = $resultado[0];
 
-    if (!$_SESSION['lista'] === ""){
-        $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
-    }
+    $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
 
     $mostrar = true;
 

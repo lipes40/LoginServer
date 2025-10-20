@@ -1,6 +1,7 @@
 <?php
 
     require("connector.php");
+	require("cripto.php");
 
 /*if(isset($_POST)){
     echo "<pre>";
@@ -28,10 +29,10 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
             $error = "Esse email ja foi cadastrado!";
         }
     else{
-
-        $lista = "";
+        
+        $lista = encrypt_aes_gcm("", $senha);
         $bloco = "";
-
+        
         $stmt = $pdo->prepare("SELECT MAX(id) FROM usuarios");
         $stmt->execute();
         $id = $stmt->fetch()[0]+1;
