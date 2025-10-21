@@ -26,7 +26,7 @@
 
         $lista = array_map('trim', $lista);
 
-        $texto = implode(",", $lista);
+        $texto = implode("###,,,@@@", $lista);
 
         $cripto = encrypt_aes_gcm($texto, $_SESSION['senha']);
 
@@ -326,7 +326,7 @@
                 <div id="inputs-container" class="inputs-container">
                     <?php 
 
-                    $lista = explode(",", $texto);
+                    $lista = explode("###,,,@@@", $texto);
                     
                     foreach($lista as $item): 
                     ?>
