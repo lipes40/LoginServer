@@ -333,7 +333,7 @@
                     <div class="items">
                         <p class="numerador"><?php $cont ++;
                         echo $cont ?></p>
-                        <input type="text" placeholder="adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
+                        <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                         <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                     </div>
                     <?php endforeach ?>
