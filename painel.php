@@ -49,6 +49,7 @@
         *{
             padding: 0;
             margin: 0;
+            font-family: "arial", sans-serif;
         }
 
         p {
@@ -198,14 +199,15 @@
         }
 
         input {
+            padding-left: 5px;
             background-color: #111111;
             color: white;
             border: none;
-            font-size: large;
+            font-size: 20px;
             margin-top: 5px;
             display: flex;
             width: 90%;
-            height: 100%;
+            height: 70%;
         }
 
         .inputs-container{
@@ -295,7 +297,7 @@
 </head>
 <body class="principal">
     <header>
-        <h1>Sejá bem vindo ao Painel</h1> 
+        <h1>Seja bem vindo ao Painel</h1> 
         <button class="mostrar" onclick="mostra()">Minhas informações</button>
     </header>
 
