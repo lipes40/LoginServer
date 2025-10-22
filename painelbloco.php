@@ -214,6 +214,7 @@
             display: flex;
             width: 90%;
             height: 500px;
+            padding-left: 5px;
         }
 
         .inputs-container{
@@ -275,7 +276,7 @@
 <body class="principal">
 
     <header>
-    <h1>Sejá bem vindo ao Painel</h1> 
+    <h1>Sejá bem vindo ao SecurePad</h1> 
     <button class="mostrar" onclick="mostra()">Minhas informações</button>
     </header>
 

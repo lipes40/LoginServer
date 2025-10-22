@@ -175,6 +175,7 @@
             border-radius: 5px;
             transition: 0.2s;
             cursor: pointer;
+            font-size: large;
         }
 
         .entrar:hover{

@@ -297,7 +297,7 @@
 </head>
 <body class="principal">
     <header>
-        <h1>Seja bem vindo ao Painel</h1> 
+        <h1>Seja bem vindo ao SecurePad</h1> 
         <button class="mostrar" onclick="mostra()">Minhas informações</button>
     </header>
 

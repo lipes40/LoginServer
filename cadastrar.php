@@ -70,6 +70,7 @@
             border-radius: 20px;
             transition: 0.2s;
             cursor: pointer;
+            font-size: large;
         }
 
         .button:hover{
@@ -115,6 +116,10 @@
         .p-login{
             color: #8A2BE2;
             margin: 5px 0;
+        }
+
+        .g-recaptcha{
+            margin-top: 18px;
         }
 
         @media (max-width: 800px) {
@@ -163,7 +168,7 @@
         <h3>Confirme a senha</h3>
         <input type="password" minlength="6" name="c-reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['c-reSenha'] ?? ''; ?>">
 
-        <div class="g-recaptcha" data-sitekey="6LdfvPMrAAAAAB9EL3o2jDoivZg69ud1enTZBEq8"></div>
+        <div class="g-recaptcha" data-sitekey="6LcovfMrAAAAAP-Y8MWJjYB7IPYm2xOaEJj24F_l"></div>
         
         <input class="button" type="submit" value="Enviar">
 
