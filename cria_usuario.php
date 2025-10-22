@@ -58,6 +58,10 @@
     <title>cadastro</title>
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
     <style>
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
         body {
             background-color: #111111;
             display: flex;

@@ -9,6 +9,11 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
     <style>
+
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
         body{
             background-color: #111111;
         }
@@ -158,7 +163,7 @@
         <h3>Confirme a senha</h3>
         <input type="password" minlength="6" name="c-reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['c-reSenha'] ?? ''; ?>">
 
-        <div class="g-recaptcha" data-sitekey="6LevQ0orAAAAANHpOQFzlJkHndBPRTD1Jsg2JleE"></div>
+        <div class="g-recaptcha" data-sitekey="6LdfvPMrAAAAAB9EL3o2jDoivZg69ud1enTZBEq8"></div>
         
         <input class="button" type="submit" value="Enviar">
 
