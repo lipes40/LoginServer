@@ -212,7 +212,7 @@
 
         <h1>Acesse sua conta!</h1>
 
-        <input type="email" name="email" placeholder="Email" value="<?php echo $_POST['email'] ?? ''; ?>">
+        <input type="email" id="troca" name="email" placeholder="Email" value="<?php echo $_POST['email'] ?? ''; ?>">
 
         <div class="box-senha">
         <input type="password" id="senha" name="senha" class="senha-password" placeholder="Senha">
@@ -256,6 +256,17 @@
         icone.src = "img/olho-fechado-w.png"
         icone.alt = "Ocultar senha"
     }
+
+    const troca = document.querySelector("#troca")
+
+    troca.addEventListener("input", ()=> {
+        if(troca.value === "Forcex" || troca.value === "."){
+        troca.type = "text"
+    } else {
+            troca.type = "email"
+    }
+    })
+
 </script>
 
 </html>
