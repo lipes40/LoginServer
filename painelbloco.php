@@ -41,6 +41,8 @@
         $stmt->execute([$lista, $_SESSION["id"]]);
 
         $lista = decrypt_aes_gcm($lista, $_SESSION['senha']);
+
+        header("Location: painel.php");
     }
 ?>
 
