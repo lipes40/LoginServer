@@ -34,6 +34,8 @@
 
         $stmt = $pdo->prepare("UPDATE usuarios SET lista = ? WHERE id = ?");
         $stmt->execute([$cripto, $_SESSION["id"]]);
+
+        header("Location: painel.php");
     }
 ?>
 
