@@ -42,7 +42,7 @@
 
         $lista = decrypt_aes_gcm($lista, $_SESSION['senha']);
 
-        header("Location: painel.php");
+        header("Location: painelbloco.php");
     }
 ?>
 

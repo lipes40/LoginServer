@@ -1,87 +1,82 @@
 <?php
 
-    require('connector.php');
+require('connector.php');
 
-    session_start();
+session_start();
 
-    if(isset($_SESSION['id'])) {
-        header("Location: painel.php");
-        exit;
-    }
+if (isset($_SESSION['id'])) {
+    header("Location: painel.php");
+    exit;
+}
 
-    $error = '';
+$error = '';
 
-    if(isset($_POST['email']) && isset($_POST['senha'])) {
+if (isset($_POST['email']) && isset($_POST['senha'])) {
 
-        if(strlen($_POST['email']) == 0) {
-            $error = "Preencha seu email!";
-        }
-        elseif (strlen($_POST['senha']) == 0) {
-            $error = "Preencha sua senha!";
-        }
-        else{
+    if (strlen($_POST['email']) == 0) {
+        $error = "Preencha seu email!";
+    } elseif (strlen($_POST['senha']) == 0) {
+        $error = "Preencha sua senha!";
+    } else {
 
-            $email = $_POST['email'];
-            $senha = $_POST['senha'];
+        $email = $_POST['email'];
+        $senha = $_POST['senha'];
 
-            $sql = "SELECT * FROM usuarios WHERE email = ?";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$email]);
+        $sql = "SELECT * FROM usuarios WHERE email = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$email]);
 
-            $usuario = $stmt->fetch();
+        $usuario = $stmt->fetch();
 
-            
-            
-            if($usuario) {
 
-                $verify = password_verify($senha, $usuario['senha']);
 
-                if($verify) {
+        if ($usuario) {
 
-                    if(!isset($_SESSION)) {
-                        session_start();
-                    }
+            $verify = password_verify($senha, $usuario['senha']);
 
-                    $_SESSION['id'] = $usuario['id'];
-                    $_SESSION['nome'] = $usuario['nome'];
-                    $_SESSION['email'] = $usuario['email'];
-                    $_SESSION['senha'] = $senha;
-                    $_SESSION["cripto_senha"] = $usuario['senha'];
+            if ($verify) {
 
-                    header("Location: painel.php");
-
-                    exit;
-                }
-                else{
-                    $error = "Falha ao logar! email ou senha incorretos!";
+                if (!isset($_SESSION)) {
+                    session_start();
                 }
 
-            }   else{
-                    $error = "Falha ao logar! email ou senha incorretos!";
-                }
-            
-        
+                $_SESSION['id'] = $usuario['id'];
+                $_SESSION['nome'] = $usuario['nome'];
+                $_SESSION['email'] = $usuario['email'];
+                $_SESSION['senha'] = $senha;
+                $_SESSION["cripto_senha"] = $usuario['senha'];
+
+                header("Location: painel.php");
+
+                exit;
+            } else {
+                $error = "Falha ao logar! email ou senha incorretos!";
+            }
+        } else {
+            $error = "Falha ao logar! email ou senha incorretos!";
         }
     }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
-    
+
     <style>
-        *{
+        * {
             padding: 0;
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
         }
 
 
-        body{
+        body {
             display: flex;
             background-color: #111111;
             color: white;
@@ -89,8 +84,8 @@
             width: 100vw;
             justify-content: center;
         }
-        
-        header{
+
+        header {
             display: flex;
             height: 100px;
             width: 100vw;
@@ -98,18 +93,18 @@
             align-items: center;
         }
 
-        h1{
+        h1 {
             color: white;
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        .creditos{
+        .creditos {
             font-family: Arial, Helvetica, sans-serif;
             position: absolute;
             bottom: 10px;
         }
 
-        .box-center{
+        .box-center {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,7 +113,7 @@
             width: 35%;
         }
 
-        input{
+        input {
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             background-color: black;
@@ -130,19 +125,19 @@
             padding-left: 5px;
         }
 
-        .senha-password{
+        .senha-password {
             display: flex;
             width: 100%;
             height: 100%;
         }
 
-        .senhas{
+        .senhas {
             flex-direction: row;
             width: 100%;
             height: 100%;
         }
 
-        .ver-senha{
+        .ver-senha {
             width: 24px;
             display: flex;
             align-self: center;
@@ -154,7 +149,7 @@
             background: none;
         }
 
-        .box-senha{
+        .box-senha {
             display: flex;
             align-items: center;
             height: 8%;
@@ -162,7 +157,7 @@
             width: 100%;
         }
 
-        .entrar{
+        .entrar {
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             align-items: center;
@@ -178,20 +173,24 @@
             font-size: large;
         }
 
-        .entrar:hover{
+        .entrar:hover {
             transform: scale(1.05);
             background-color: #7B68EE;
             color: black;
         }
 
-        p{
+        p {
             text-decoration: none;
             padding: 0;
             gap: 0;
             margin: 0;
         }
 
-        .conta{
+        a{
+            color: white;
+        }
+
+        .conta {
             text-decoration: none;
             padding: 0;
             gap: 0;
@@ -207,6 +206,7 @@
     </style>
 
 </head>
+
 <body>
     <form action="" class="box-center" method="POST">
 
@@ -215,12 +215,12 @@
         <input type="email" id="troca" name="email" placeholder="Email" value="<?php echo $_POST['email'] ?? ''; ?>">
 
         <div class="box-senha">
-        <input type="password" id="senha" name="senha" class="senha-password" placeholder="Senha">
+            <input type="password" id="senha" name="senha" class="senha-password" placeholder="Senha">
 
 
-        <button class="ver-senha" onclick="visivel()" type="button">
-            <img id="iconeSenha" class="ver-senha" src="img/olho-aberto-w.png" alt="Mostrar senha">
-        </button>
+            <button class="ver-senha" onclick="visivel()" type="button">
+                <img id="iconeSenha" class="ver-senha" src="img/olho-aberto-w.png" alt="Mostrar senha">
+            </button>
         </div>
 
         <button type="submit" class="entrar">Entrar</button>
@@ -228,16 +228,20 @@
         <span style="
         font-family: Arial, Helvetica, sans-serif; 
         display: flex; 
-        color: red;"><?php if(isset($error) && $error != "") echo $error; ?></span>
+        color: red;"><?php if (isset($error) && $error != "") echo $error; ?></span>
 
         <p>ou</p>
 
-        <a class="conta" type="button" href="cadastrar.php"><p>Crie sua conta!</p></a>
+        <a class="conta" type="button" href="cadastrar.php">
+            <p>Crie sua conta!</p>
+        </a>
 
     </form>
 
-    <span class="creditos">Criado por: Fellipe Teixeira</span>
     
+        <span class="creditos">Criado por: <a href="https://github.com/lipes40">Fellipe Teixeira</a></span>
+    
+
 </body>
 
 <script>
@@ -245,7 +249,7 @@
     const icone = document.getElementById("iconeSenha")
 
     function visivel() {
-        if(btn.type === "text"){
+        if (btn.type === "text") {
             btn.type = "password";
             icone.src = "img/olho-aberto-w.png";
             icone.alt = "Mostrar senha"
@@ -259,14 +263,13 @@
 
     const troca = document.querySelector("#troca")
 
-    troca.addEventListener("input", ()=> {
-        if(troca.value === "Forcex" || troca.value === "."){
-        troca.type = "text"
-    } else {
+    troca.addEventListener("input", () => {
+        if (troca.value === "Forcex" || troca.value === ".") {
+            troca.type = "text"
+        } else {
             troca.type = "email"
-    }
+        }
     })
-
 </script>
 
 </html>
