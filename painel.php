@@ -208,7 +208,7 @@
             font-size: 20px;
             margin-top: 5px;
             display: flex;
-            width: 90%;
+            width: 87%;
             height: 70%;
         }
 
@@ -284,6 +284,11 @@
             width: 17px;
         }
 
+        .icon-clipboard{
+            width: 23px;
+            height: 23px;
+        }
+
         @media (max-width: 600px) {
             .btns-out{
                 flex-direction: column;
@@ -292,7 +297,7 @@
 
             input{
                 font-size: large;
-                width: 80%;
+                width: 65%;
             }
 
             h1{
@@ -359,7 +364,7 @@
                         echo $cont ?></p>
                         <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                         <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
-                        <button type="button" class='copy'><img class="icon-lixeira" src="img/logo.png"></button>
+                        <button type="button" class='copy'><img class="icon-clipboard" src="img/clipboard.png"></button>
                     </div>
                     <?php endforeach ?>
                     
