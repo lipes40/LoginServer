@@ -265,6 +265,21 @@
             background: none;
         }
 
+        .copy{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            background: none;
+            width: 50px;
+            height: 50px;
+            margin: 0;
+        }
+
+        .copy:hover{
+            background: none;
+        }
+
         .icon-lixeira{
             width: 17px;
         }
@@ -289,6 +304,11 @@
             }
 
             .deletar{
+                width: 40px;
+                height: 40px;
+            }
+
+            .copy{
                 width: 40px;
                 height: 40px;
             }
@@ -339,6 +359,7 @@
                         echo $cont ?></p>
                         <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                         <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+                        <button type="button" class='copy'><img class="icon-lixeira" src="img/logo.png"></button>
                     </div>
                     <?php endforeach ?>
                     
@@ -391,11 +412,21 @@
     });
 
     container.addEventListener('click', (event) => {
-  const botao = event.target.closest('.deletar');
-  if (botao) {
-    botao.parentElement.remove();
+        const botao = event.target.closest('.deletar');
+        const botao_copy = event.target.closest('.copy')
 
-  }
+        if (botao) {
+            botao.parentElement.remove();
+        }
+
+        if (botao_copy) {
+            const div_items = event.target.closest('.items')
+
+            let input_btn = div_items.querySelector('input')
+            navigator.clipboard.writeText(input_btn.value)
+        }
+
+
 });
 
 </script>
