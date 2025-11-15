@@ -112,43 +112,54 @@
         .btn-morte{
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
-            background-color: red;
-            color: black;
-            width: 50%;
+            padding: 6px;
+            border: 1px solid red;
+            color: white;
+            width: 100%;
             height: 30px;
             align-items: center;
+            gap: 10px;
             justify-content: center;
             border-radius: 15px;
             transition: 0.2s;
             text-decoration: none;
+            text-align: center;
+            margin: 5px;
         }
 
         .btn-morte:hover{
             transform: scale(1.05);
-            background-color: #8B0000;
+            background: #8B0000;
+            background: linear-gradient(180deg, rgba(139, 0, 0, 0.25) 0%, rgba(139, 0, 0, 0.25) 100%);  
         }
 
         .btn-senha{
+            text-align: center;
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
-            background-color: 	#1E90FF;
-            color: black;
+            border: 1px solid #1E90FF;
+            color: white;
             border-radius: 15px;
-            width: 50%;
+            padding: 6px;
+            width: 100%;
+            margin: 5px;
             height: 30px;
             align-items: center;
             justify-content: center;
             transition: 0.2s;
             text-decoration: none;
             cursor: pointer;
+            backdrop-filter: 80px;
         }
 
         .btn-senha:hover{
             transform: scale(1.05);
-            background-color: #00008B;
+            background: #1E90FF;
+            background: linear-gradient(90deg, rgba(30, 144, 255, 0.25) 0%, rgba(30, 144, 255, 0.25) 100%);
         }
 
         .buttons{
+            margin-top: 10px;
             width: 100%;
             display: flex;
             flex-direction: row;
@@ -164,7 +175,14 @@
         .info{
             display: none;
             margin-top: 50px;
+            transition: 2s;
             flex-direction: column;
+            width: 350px;
+            height: auto;
+            border: 1px solid rgba(230, 230, 230, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            align-items: center;
         }
 
         form{
@@ -208,7 +226,7 @@
             font-size: 20px;
             margin-top: 5px;
             display: flex;
-            width: 87%;
+            width: 90%;
             height: 70%;
         }
 
@@ -282,11 +300,18 @@
 
         .icon-lixeira{
             width: 17px;
+            height: 20px;
         }
 
         .icon-clipboard{
             width: 23px;
             height: 23px;
+        }
+
+        .lixeira{
+            width: 15px;
+            height: 20px;
+            margin-right: 5px;
         }
 
         @media (max-width: 600px) {
@@ -298,6 +323,10 @@
             input{
                 font-size: large;
                 width: 65%;
+            }
+
+            .info{
+                width: 70%;
             }
 
             h1{
@@ -340,7 +369,7 @@
             <div class="buttons">
 
                 <a class="btn-morte" href="deletar_conta.php">
-                    <img src="img/lixeira.png">deletar conta
+                    <img class="icon-lixeira" src="img/lixeira-branca.png">Deletar conta
                 </a>
 
                 <a class="btn-senha" href="muda_senha.php">
@@ -362,9 +391,11 @@
                     <div class="items">
                         <p class="numerador"><?php $cont ++;
                         echo $cont ?></p>
+
                         <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
-                        <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                         <button type="button" class='copy'><img class="icon-clipboard" src="img/clipboard.png"></button>
+                        <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+
                     </div>
                     <?php endforeach ?>
                     
