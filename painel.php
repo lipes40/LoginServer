@@ -165,6 +165,16 @@
             flex-direction: row;
         }
 
+        .add{
+            color: gray;
+            background: none;
+        }
+
+        .add:hover{
+            background: none;
+            color: white;
+        }
+
         .mostrar{   
             height: 70%;
             margin-right: 20px;
@@ -241,10 +251,15 @@
 
         .items{
             display: flex;
-            width: 100%;
+            width: 90%;
             margin-top: 5px;
             align-items: center;
             justify-content: center;
+        }
+
+        hr{
+            border: 1px solid white;
+            width: 90vw;
         }
 
         .numerador{
@@ -297,6 +312,21 @@
             background: none;
         }
 
+        .divisoria{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            background: none;
+            width: 50px;
+            height: 50px;
+            margin: 0;
+        }
+
+        .divisoria:hover{
+            background: none;
+        }
+
         .icon-lixeira{
             width: 17px;
             height: 20px;
@@ -311,6 +341,38 @@
             width: 15px;
             height: 20px;
             margin-right: 5px;
+        }
+
+        .dropdown{
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown:hover ul{
+            display: flex;
+        }
+
+        ul{
+            position: absolute;
+            bottom: 100%;
+            right: -100%;
+            background-color: #8A2BE2;
+            margin-right: 10px;
+            display: none;
+            border-radius: 15px;
+            flex-direction: column;
+            list-style: none;
+        }
+
+        ul:hover{
+            display: flex;
+        }
+
+        li{
+        }
+
+        li:hover{
         }
 
         @media (max-width: 600px) {
@@ -393,17 +455,30 @@
 
                         <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                         <button type="button" class='copy'><img class="icon-clipboard" src="img/clipboard.png"></button>
-                        <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+
+                        <div class="dropdown">
+                            ...
+                            <ul>
+                                <li>
+                                    <button id="divisoria" type="button" class='divisoria'><img class="icon-clipboard" src="img/clipboard.png"></button>
+                                </li>
+                                <li>
+                                    <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button> -->
 
                     </div>
                     <?php endforeach ?>
+                    <button class="add" id="adicionar">Adicionar Linha</button>
                     
                 </div>
                 <div class="btns-out">
-                    <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
-                    <button class="salvar" type="submit">Salvar</button>
+                    <button class="salvar">Salvar</button>
                     <a href="painelbloco.php">
-                        <button type="button" id="deletar" class="bloco" type="button">Ir para Bloco</button>
+                        <button type="button" id="deletar" class="bloco">Ir para Bloco</button>
                     </a>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
                 </div>
@@ -437,6 +512,7 @@
     const container = document.getElementById('inputs-container');
     const btnAdicionar = document.getElementById('adicionar')
     const btnDeletar = document.getElementById('deletar')
+    const btnDivisoria = document.getElementById('divisoria')
 
     btnAdicionar.addEventListener('click', () => {
         const input = document.createElement('input');
@@ -446,12 +522,20 @@
         container.appendChild(input);
     });
 
+    // btnDivisoria.addEventListener('click', (event) => {
+    //     let div_items = event.target.closest('.items')
+
+    //     div_items.insertAdjacentHTML('afterend', '<hr>')
+    // });
+
     container.addEventListener('click', (event) => {
         const botao = event.target.closest('.deletar');
         const botao_copy = event.target.closest('.copy')
+        const botao_divisoria = event.target.closest('.divisoria')
 
         if (botao) {
-            botao.parentElement.remove();
+            const deletar = event.target.closest('.items')
+            deletar.remove()
         }
 
         if (botao_copy) {
@@ -459,6 +543,13 @@
 
             let input_btn = div_items.querySelector('input')
             navigator.clipboard.writeText(input_btn.value)
+        }
+
+        if (botao_divisoria) {
+            const div_items = event.target.closest('.items')
+            if (div_items.nextElementSibling.tagName != "HR"){
+                div_items.insertAdjacentHTML('afterend', '<hr>')
+            }
         }
 
 
