@@ -327,6 +327,21 @@
             background: none;
         }
 
+        .linha{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            background: none;
+            width: 50px;
+            height: 50px;
+            margin: 0;
+        }
+
+        .linha:hover{
+            background: none;
+        }
+
         .icon-lixeira{
             width: 17px;
             height: 20px;
@@ -337,10 +352,20 @@
             height: 23px;
         }
 
+        .icon-input{
+            height: 12px;
+            width: 40px;
+        }
+
         .lixeira{
             width: 15px;
             height: 20px;
             margin-right: 5px;
+        }
+
+        .icon-divisoria{
+            width: 30px;
+            height: 3px;
         }
 
         .dropdown{
@@ -360,6 +385,8 @@
             background-color: #8A2BE2;
             margin-right: 10px;
             display: none;
+            align-items: center;
+            justify-content: center;
             border-radius: 15px;
             flex-direction: column;
             list-style: none;
@@ -454,16 +481,19 @@
                         echo $cont ?></p>
 
                         <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
-                        <button type="button" class='copy'><img class="icon-clipboard" src="img/clipboard.png"></button>
+                        <button type="button" class='copy'><img class="icon-clipboard" title="Copiar" src="img/clipboard.png"></button>
 
                         <div class="dropdown">
                             ...
                             <ul>
                                 <li>
-                                    <button id="divisoria" type="button" class='divisoria'><img class="icon-clipboard" src="img/clipboard.png"></button>
+                                    <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png" title="Deletar"></button>
                                 </li>
                                 <li>
-                                    <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
+                                    <button type="submit" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
+                                </li>
+                                <li>
+                                    <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
                                 </li>
                             </ul>
                         </div>
@@ -472,15 +502,15 @@
 
                     </div>
                     <?php endforeach ?>
-                    <button class="add" id="adicionar">Adicionar Linha</button>
+                    <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
                     
                 </div>
                 <div class="btns-out">
-                    <button class="salvar">Salvar</button>
+                    <button type="submit" class="salvar">Salvar</button>
                     <a href="painelbloco.php">
-                        <button type="button" id="deletar" class="bloco">Ir para Bloco</button>
+                        <button type="submit" id="deletar" class="bloco">Ir para Bloco</button>
                     </a>
-                    <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
+                    <a class="base-line" href="logout.php"><button type="submit" class="sair">Sair</button></a>
                 </div>
             </div>
             
@@ -512,7 +542,6 @@
     const container = document.getElementById('inputs-container');
     const btnAdicionar = document.getElementById('adicionar')
     const btnDeletar = document.getElementById('deletar')
-    const btnDivisoria = document.getElementById('divisoria')
 
     btnAdicionar.addEventListener('click', () => {
         const input = document.createElement('input');
@@ -522,16 +551,11 @@
         container.appendChild(input);
     });
 
-    // btnDivisoria.addEventListener('click', (event) => {
-    //     let div_items = event.target.closest('.items')
-
-    //     div_items.insertAdjacentHTML('afterend', '<hr>')
-    // });
-
     container.addEventListener('click', (event) => {
         const botao = event.target.closest('.deletar');
         const botao_copy = event.target.closest('.copy')
         const botao_divisoria = event.target.closest('.divisoria')
+        const botao_linha = event.target.closest('.linha')
 
         if (botao) {
             const deletar = event.target.closest('.items')
@@ -545,10 +569,24 @@
             navigator.clipboard.writeText(input_btn.value)
         }
 
+        if (botao_linha) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'items[]';
+            input.placeholder = 'Adicione algo'
+
+            const div_items = event.target.closest('.items')
+            div_items.insertAdjacentHTML('afterend', '<input type="text", name="items[]", placeholder="Adicione algo">')
+            locate.reload()
+        }
+
         if (botao_divisoria) {
             const div_items = event.target.closest('.items')
             if (div_items.nextElementSibling.tagName != "HR"){
                 div_items.insertAdjacentHTML('afterend', '<hr>')
+            }
+            else{
+                div_items.nextElementSibling.remove()
             }
         }
 
