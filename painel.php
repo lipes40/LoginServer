@@ -18,7 +18,11 @@
     $_SESSION['lista'] = $resultado[3];
 
     if ($resultado[5] == "privado") {
+        $visibilidade = ["Privado", "Público"];
         $_SESSION['lista'] = decrypt_aes_gcm($_SESSION['lista'], $_SESSION['senha']);
+    }
+    else{
+        $visibilidade = ["Público", "Privado"];
     }
 
     $mostrar = true;
@@ -49,7 +53,7 @@
         $stmt = $pdo->prepare("UPDATE listas SET lista = ? WHERE id = ?");
         $stmt->execute([$cripto, $resultado[0]]);
 
-        header("Location: painel.php");
+        header("Refresh: 0");
     }
 ?>
 
@@ -87,11 +91,18 @@
             display: flex;
             width: 100%;
             height: 100%;
-            margin-top: 20px;
             align-items: center;
             flex-direction: column;
             justify-content: center;
             text-decoration: none;
+        }
+
+        button{
+            justify-self: center;
+        }
+
+        a{
+            justify-self: center;
         }
 
         img{
@@ -124,6 +135,7 @@
         .items{
             display: flex;
             width: 90%;
+            color: white;
             margin-top: 5px;
             align-items: center;
             justify-content: center;
@@ -140,14 +152,13 @@
         }
 
         .btns-out{
+            width: 80%;
             justify-content: center;
             margin-top: 10px;
-            display: flex;
-        }
-
-        .salvar{
-            margin-left: 5px;
-            margin-right: 5px;
+            justify-content: center;
+            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            display: grid;
         }
 
         .bloco{
@@ -263,11 +274,14 @@
             display: flex;
         }
 
+        .list-info{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+        }
+
         @media (max-width: 600px) {
-            .btns-out{
-                flex-direction: column;
-                align-items: center;
-            }
 
             input{
                 font-size: large;
@@ -287,6 +301,19 @@
     <?php require ("frame_painel.php") ?>
         <form method="post" action="">
             <div class="inputs-container">
+                <div class="list-info">
+                    <h2><?php echo $name_list ?></h2>
+                    <div class="dropdown">
+                        <img src="img/informacoes.png" alt="">
+                        <ul>
+                            <label for="">Visibilidade:</label>
+                            <select name="" id="">
+                                <option value="<?php echo $visibilidade[0] ?>"><?php echo $visibilidade[0]?></option>
+                                <option value="<?php echo $visibilidade[0] ?>"><?php echo $visibilidade[1]?></option>
+                            </select>
+                        </ul>
+                    </div>
+                </div>
                 <div id="inputs-container" class="inputs-container">
                     <?php 
 
@@ -327,7 +354,7 @@
 
                     </div>
                     <?php endforeach ?>
-                    <button type="submit" class="add" id="adicionar">Adicionar Linha</button>
+                    <button type="button" class="add" id="adicionar">Adicionar Linha</button>
                     
                 </div>
                 <div class="btns-out">
@@ -346,21 +373,52 @@
 
         
         </form>
-        
-    </div>
-
 </body>
 <script>
     const container = document.getElementById('inputs-container');
     const btnAdicionar = document.getElementById('adicionar')
     const btnDeletar = document.getElementById('deletar')
 
-    btnAdicionar.addEventListener('click', () => {
+    btnAdicionar.addEventListener('click', (event) => {
         const input = document.createElement('input');
-        input.type = 'text';
-        input.name = 'items[]';
-        input.placeholder = 'Adicione algo'
-        container.appendChild(input);
+        const last = event.target.previousElementSibling;
+        let numero = last.querySelector('p').innerText;
+        numero = parseInt(numero) +1
+
+        const html = `
+            <div class="items">
+                <p class="numerador"><?php $cont ++; echo $cont ?></p>
+                <input type="text" placeholder="Adicione algo" name="items[]" value="">
+                <button type="button" class='copy'><img class="icon-clipboard" title="Copiar" src="img/clipboard.png"></button>
+                <div class="dropdown">
+                    ...
+                    <ul>
+                        <li>
+                            <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png" title="Deletar"></button>
+                        </li>
+                        <li>
+                            <button type="submit" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
+                        </li>
+                        <li>
+                            <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png"></button> -->
+
+            </div>
+            `;
+
+        last.insertAdjacentHTML('afterend', html)
+
+        console.log(last)
+
+        // input.type = 'text';
+        // input.style.width = "90%"
+        // input.name = 'items[]';
+        // input.placeholder = 'Adicione algo'
+        // container.appendChild(input);
     });
 
     container.addEventListener('click', (event) => {
@@ -382,14 +440,21 @@
         }
 
         if (botao_linha) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.name = 'items[]';
-            input.placeholder = 'Adicione algo'
-
             const div_items = event.target.closest('.items')
-            div_items.insertAdjacentHTML('afterend', '<input type="text", name="items[]", placeholder="Adicione algo">')
-            locate.reload()
+            let numero = div_items.querySelector('p').innerText;
+            numero = parseInt(numero) +1
+
+            const html = `
+            <div class="items">
+                <p class="numerador">${numero}</p>
+                <input type="text", name="items[]", placeholder="Adicione algo" style="width: 90%;">
+                <button type="button" class="copy">
+                    <img class="icon-clipboard" title="Copiar" src="img/clipboard.png">
+                </button>...
+            </div>
+            `;
+
+            div_items.insertAdjacentHTML('afterend', html)
         }
 
         if (botao_divisoria) {
