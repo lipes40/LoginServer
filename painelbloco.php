@@ -39,10 +39,10 @@
     }
 
     if ($_SESSION['type_lista'][5] == "publico") {
-        $visibilidade = [["privado", "publico"], ["Privado", "Público"]];
+        $visibilidade = [["publico", "privado"], ["Público", "Privado"]];
     }
     else{
-        $visibilidade = [["publico", "privado"], ["Público", "Privado"]];
+        $visibilidade = [["privado", "publico"], ["Privado", "Público"]];
     }
 
     if ($_SESSION['type_lista'][4] == "lista"){

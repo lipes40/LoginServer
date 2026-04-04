@@ -202,8 +202,8 @@
 </head>
 <body>
     <header>
-        <a href="painel.php">
-        <button id="voltar" class="button-log">Voltar ao painel</button>
+        <a href="selecionar_lista.php">
+        <button id="voltar" class="button-log">Voltar as listas</button>
         </a>
         <h1>Mude sua senha!</h1>
     </header>
@@ -234,7 +234,7 @@
     }
 
     else{
-        voltar.innerText = "Voltar ao painel";
+        voltar.innerText = "Voltar as listas";
     }
     
 </script>

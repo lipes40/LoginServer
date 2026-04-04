@@ -15,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selecione a lista</title>
+    <title>Selecione a lista desejada!</title>
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
 
     <style>
@@ -77,18 +77,52 @@
 
         .base-line{
             display: flex;
-            width: 100%;
             justify-content: center;
         }
 
-        .btn-sair{
-            background-color: #8B0000;
-            bottom: 0;
+        .out-buttons{
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
+            bottom: 0;
             position: absolute;
+            width: 100%;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .btn-sair{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            width: 200px;
+            height: 50px;
+            background-color: #8B0000;
+            
         }
         .btn-sair:hover{
             background-color: #7B0000;
+        }
+
+        .new-list{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            width: 200px;
+            text-align: center;
+            background-color: #8A2BE2;
+            margin: 0;
+            height: 50px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .new-list:hover{
+            transform: scale(1.05);
+            background-color: #7B68EE;
         }
     </style>
 
@@ -118,7 +152,10 @@
         </div>
     </div>
 
-    <a class="base-line" href="logout.php"><button type="button" class="btn-sair">Sair</button></a>
+    <div class="out-buttons">
+        <a href="criar_lista.php" class="new-list">Nova lista</a>
+        <a class="btn-sair" href="logout.php">Sair</a>
+    </div>
 
 </body>
 </html>

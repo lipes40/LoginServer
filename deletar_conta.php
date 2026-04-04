@@ -222,7 +222,7 @@
         <b class="error"><?php echo $error; ?></b>
 
         <div class="div-delet">
-            <a class="a-delet" href="painel.php"><button type="button" onclick="abrirModal()" class="btn-volt">Voltar</button></a>
+            <a class="a-delet" href="selecionar_lista.php"><button type="button" onclick="abrirModal()" class="btn-volt">Voltar</button></a>
             <button type="submit" class="btn-delet">Deletar</button>
         </div>
     </form>
