@@ -59,6 +59,7 @@ $mostrar = true;
             height: 10%;
             justify-content: space-between;
             align-items: center;
+            margin-top: 10px;
         }
 
         .mostrar{   

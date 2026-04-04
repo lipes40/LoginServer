@@ -1,18 +1,13 @@
 <?php 
     require ("connector.php");
     require ("protect.php");
+    require ("cripto.php");
 
-    $sql = "SELECT nome_lista FROM listas WHERE user_id = ?";
+    $sql = "SELECT nome_lista, visibilidade FROM listas WHERE user_id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$_SESSION['id']]);
     
     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $lista = [];
-
-    foreach ($resultado as $i) {
-        $lista[] = $i['nome_lista'];
-    }
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +74,22 @@
             background-color: #7B68EE;
             color: black;
         }
+
+        .base-line{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-sair{
+            background-color: #8B0000;
+            bottom: 0;
+            margin-bottom: 20px;
+            position: absolute;
+        }
+        .btn-sair:hover{
+            background-color: #7B0000;
+        }
     </style>
 
 </head>
@@ -87,11 +98,27 @@
     <div class="items">
         <h1>Escolha sua lista</h1>
         <div class="listas">
-            <?php foreach ($lista as $i): ?>
-                <a class="btn-lista" href="painel.php?lista=<?php echo $i ?>"><?php echo $i ?></a>
+            <?php foreach ($resultado as $i): ?>
+                <a class="btn-lista" href="painel.php?lista=<?php
+                    $lista = $i['nome_lista'];
+                    if (str_contains($i['nome_lista'], "+")){
+                        $lista = str_replace("+", "strcontainmais", $lista); 
+                    }
+                     echo $lista;
+                     ?>">
+                <?php
+                        if ($i['visibilidade'] == 'privado'){
+                            echo decrypt_aes_gcm($i['nome_lista'], $_SESSION['senha']);
+                            continue;
+                        }
+                        echo $i['nome_lista'];
+                    ?>
+                </a>
             <?php endforeach ?>
         </div>
     </div>
+
+    <a class="base-line" href="logout.php"><button type="button" class="btn-sair">Sair</button></a>
 
 </body>
 </html>
