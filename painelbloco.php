@@ -10,6 +10,7 @@
     $name_list = $_GET['lista'];
     if (!$name_list) {
         header("Location: selecionar_lista.php");
+        exit();
     }
     $name_list = urldecode($name_list);
     $name_list = str_replace("strcontainmais", "+", $name_list);
@@ -25,9 +26,8 @@
     // Tratamentos no arquivo puxado do banco
 
     if(!$_SESSION['type_lista']){
-        die($name_list);
-        // header("Location: selecionar_lista.php");
-        // exit();
+        header("Location: selecionar_lista.php");
+        exit();
     }
 
     if ($_SESSION['type_lista'][5] == "privado"){
@@ -36,6 +36,7 @@
 
     if ($_SESSION['type_lista'][4] == "lista"){
         header("Location: painel.php?lista=" . $_GET['lista']);
+        exit();
     }
 
     if ($_SESSION['type_lista'][5] == "publico") {
@@ -69,31 +70,54 @@
     // Código de post
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        // Criptografa o novo nome se necessário
-        
-        $lista = $_POST['items'];
-        $novo_nome = trim($_POST['nome']);
-        $estado = $_POST['visibilidade'];
-        $novo_tipo = $_POST['tipo'];
+        if (isset($_POST['items'])) {
+            // Criptografa o novo nome se necessário
+            
+            $lista = $_POST['items'];
+            $novo_nome = trim($_POST['nome']);
+            $estado = $_POST['visibilidade'];
+            $novo_tipo = $_POST['tipo'];
 
 
-        if ($estado == 'privado') {
-            $novo_nome = encrypt_aes_gcm($novo_nome, $_SESSION['senha']);
-            $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
+            if ($estado == 'privado') {
+                $novo_nome = encrypt_aes_gcm($novo_nome, $_SESSION['senha']);
+                $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
+            }
+
+            // Verifica se o nome já existe no banco de dados
+
+            $stmt = $pdo->prepare('SELECT id FROM listas WHERE nome_lista = ?');
+            $stmt->execute([$novo_nome]);
+            $nome_existente = $stmt->fetch();
+
+            if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
+                $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
+            
+                $nome_lista = $novo_nome;
+
+                if(str_contains($nome_lista, "+")){
+                    $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
+                }
+
+                header("Location: painel.php?lista=" . $nome_lista);
+                exit();
+            }
+            else{
+                $error = "O nome: " . $_POST['nome'] . ", já existe!";
+            }
         }
 
-        $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
-    
-        $nome_lista = $novo_nome;
+        if (isset($_POST['deletar_lista'])){
+            if($_POST['deletar_lista'] == $_SESSION['type_lista'][2]){
+                $stmt = $pdo->prepare('DELETE FROM listas WHERE id = ?');
+                $stmt->execute([$_SESSION['type_lista'][0]]);
 
-        if(str_contains($nome_lista, "+")){
-            $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
+                header('Location: selecionar_lista.php');
+                exit();
+            }
         }
-
-        header("Location: painel.php?lista=" . $nome_lista);
-        exit();
     }
 ?>
 
@@ -121,7 +145,6 @@
             display: flex;
             width: 100%;
             height: 100%;
-            margin-top: 20px;
             align-items: center;
             flex-direction: column;
             justify-content: center;
@@ -150,7 +173,8 @@
         .inputs-container{
             display: flex;
             margin: 0;
-            margin-top: 20px;
+            margin-top: 10px;
+            margin-bottom: 20px;
             padding: 0;
             flex-direction: column;
             align-items: center;
@@ -216,14 +240,6 @@
             align-items: center;
             justify-content: center;
             flex-direction: row;
-        }   
-
-        li{
-
-        }
-
-        .form-mudar-nome{
-
         }
 
         .input-mudar-nome{
@@ -239,6 +255,63 @@
         .btn-mudar-nome:hover{
             background: none;
         }
+
+        .delete{
+                background-color: #8B0000;
+                width: 100%;
+                height: 100%;
+                border-radius: 15px;
+                margin: 10px;
+            }
+
+        .delete:hover{
+            background-color: #7B0000;
+        }
+
+        .certeza-deletar{
+            display: none;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            background-color: #111111;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            gap: 50px;
+            flex-direction: column;
+        }
+
+        .input-delete{
+            padding: 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: medium;
+            width: 40%;
+            height: 30%;
+            max-height: 33px;
+            background-color: black;
+            color: white;
+            border-radius: 15px;
+            border: none;
+        }
+
+        .form-delete{
+            gap: 20px;
+        }
+
+        .error{
+                color: red;
+        }
+
+        .checkbox{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+
         @media (max-width: 600px) {
             .btns-out{
                 flex-direction: column;
@@ -252,7 +325,15 @@
     </style>
 
 </head>
-<body class="principal">
+<body class="frame">
+    <div id="certeza_deletar" class="certeza-deletar">
+            <form method="POST" class="form-delete" action="">
+                <h1>Tem certeza que deseja deletar a lista: <?php echo $_SESSION['type_lista'][2] ?>?</h1>
+                <h3>Digite o nome da lista para deletar</h3>
+                <input placeholder="Digite o nome da lista" class="input-delete" type="text" name="deletar_lista">
+                <button type="button" data-submit="true">Deletar</button>
+            </form>
+        </div>
     <?php require ("frame_painel.php") ?>
     <form id="envia" method="post" action="">
 
@@ -264,7 +345,7 @@
             <li>
                 <p>Nome Da Lista:</p>
                     <input id="input_mudar_nome" class="input-mudar-nome" name="nome" type="text" value="<?php echo $_SESSION['type_lista'][2] ?>">
-                </li>
+            </li>
             <li>
                 <label for="">Visibilidade:</label>
                 <select name="visibilidade" id="visibilidade" onchange="salvar()">
@@ -279,17 +360,23 @@
                     <option value="<?php echo $tipo[0][1] ?>"><?php echo $tipo[1][1] ?></option>
                 </select>
             </li>
+            <li class="checkbox">
+                <p>Link redirecionável:</p>
+                <input id="checkbox" class="checkbox" type="checkbox" value="">
+            </li>
+            <button id="deletar_lista" class="delete" type="button">Deletar lista</button>
         </ul>
     </div>
 </div>
+        <p class="error"><?php echo $error ?? ""; ?></p>
         <div class="inputs-container">
             <div id="inputs-container" class="inputs-container">
                 <div class="items">
-                <textarea type="text" placeholder="Adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
+                <textarea id="text" type="text" placeholder="Adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
                 </div>
             </div>
             <div class="btns-out">
-                <button class="salvar" type="submit">Salvar</button>
+                <button class="salvar" type="button" data-submit="true">Salvar</button>
                 <a href="selecionar_lista.php">
                 <button type="button" class="add" id="adicionar">Voltar para Listas</button>
                 </a>
@@ -306,12 +393,34 @@
 
 </body>
 <script>
-    function salvar() {
-        document.getElementById("envia").submit()
+    const checkbox = document.getElementById('checkbox')
+    const text = document.getElementById("text")
+
+    if(text.innerHTML.includes("#,@LINK_REDIRECT@,#")){
+        text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
+        checkbox.checked = true
     }
+
+    const div_deletar = document.getElementById('certeza_deletar');
+
+    document.getElementById("deletar_lista").addEventListener('click', () => {
+        div_deletar.style.display = "flex";
+    });
 
     document.getElementById("input_mudar_nome").addEventListener('change', () => {
         salvar();
     })
+
+    document.querySelectorAll("button[data-submit='true']").forEach(btn => {
+        btn.addEventListener('click', salvar);
+    })
+    
+    function salvar() {
+        if (checkbox.checked){
+            text.innerHTML += "#,@LINK_REDIRECT@,#"
+        }
+
+        document.getElementById("envia").submit()
+    }
 </script>
 </html>

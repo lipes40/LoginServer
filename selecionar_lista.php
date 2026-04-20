@@ -139,15 +139,13 @@
                         $lista = str_replace("+", "strcontainmais", $lista); 
                     }
                      echo $lista;
-                     ?>">
-                <?php
+                     ?>"><?php
+                        $nome = $i['nome_lista'];
                         if ($i['visibilidade'] == 'privado'){
-                            echo decrypt_aes_gcm($i['nome_lista'], $_SESSION['senha']);
-                            continue;
+                            $nome = decrypt_aes_gcm($nome, $_SESSION['senha']);
                         }
-                        echo $i['nome_lista'];
-                    ?>
-                </a>
+                        echo $nome;
+                    ?></a>
             <?php endforeach ?>
         </div>
     </div>

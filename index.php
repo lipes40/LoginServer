@@ -4,9 +4,18 @@ require('connector.php');
 
 session_start();
 
+$slug = trim($_SERVER['REQUEST_URI'], '/');
+$slug = str_replace("login", "", $slug);
+
+if ($slug != "" && $slug != "/index.php"){
+    $slug = str_replace("/", "", $slug);
+    header("Location: publico.php?lista=" . $slug);
+    exit();
+}
+
 if (isset($_SESSION['id'])) {
-    header("Location: painel.php");
-    exit;
+        header("Location: painel.php?lista=" . $slug);
+        exit;
 }
 
 $error = '';

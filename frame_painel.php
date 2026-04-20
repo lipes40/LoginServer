@@ -2,9 +2,6 @@
 
 require ("protect.php");
 require ("connector.php");
-
-$mostrar = true;
-
 ?>
 
 <!DOCTYPE html>
@@ -21,12 +18,10 @@ $mostrar = true;
             font-family: "arial", sans-serif;
         }
 
-        .principal{
+        .frame{
             display: flex;
             background-color: #111111;
             flex-direction: column;
-            height: 100vh;
-            width: 100%;
         }
 
         h1{
@@ -42,6 +37,7 @@ $mostrar = true;
             height: 50px;
             width: 200px;
             border-radius: 15px;
+            font-family: "arial", sans-serif;
             margin-bottom: 10px;
             transition: 0.2s;
             cursor: pointer;
@@ -71,6 +67,7 @@ $mostrar = true;
         .conjunto{
             margin-top: 10px;
             display: flex;
+            margin-bottom: 20px;
             align-items: center;
             justify-content: center;
             flex-direction: column;
@@ -178,7 +175,7 @@ $mostrar = true;
         }
     </style>
     </head>
-<body class="principal">
+<body class="frame">
     <header>
         <h1>Seja bem vindo ao SecurePad</h1> 
         <button class="mostrar" onclick="mostra()">Minhas informações</button>

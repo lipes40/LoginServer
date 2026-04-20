@@ -6,6 +6,7 @@
     $name_list = $_GET["lista"];
     if (!$name_list) {
         header("Location: selecionar_lista.php");
+        exit();
     }
     $name_list = urldecode($name_list);
     $name_list = str_replace("strcontainmais", "+", $name_list);
@@ -14,7 +15,7 @@
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$_SESSION['id'], $name_list]);
 
-    $_SESSION["type_lista"] = $stmt->fetch();
+    $_SESSION['type_lista'] = $stmt->fetch();
 
     if (!$_SESSION["type_lista"]){
         header("Location: selecionar_lista.php");
@@ -38,15 +39,13 @@
     }
 
     if ($_SESSION['type_lista'][4] == "lista"){
-        $tipo = [["bloco", "lista"], ["Bloco", "Lista"]];
+        $tipo = [["bloco", "linhas"], ["Bloco", "Linhas"]];
     }
     else{
-        $tipo = [["lista", "bloco"], ["Lista", "Bloco"]];
+        $tipo = [["linhas", "bloco"], ["Linhas", "Bloco"]];
     }
 
     $mostrar = true;
-
-    $error = '';
 
     $cont = 0;
 
@@ -57,13 +56,15 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['items'])){
             $lista = $_POST["items"];
+
             $novo_nome = trim($_POST['nome']);
+
             $estado = $_POST['visibilidade'];
             $novo_tipo = $_POST['tipo'];
 
             // Formata a lista pro jeito do banco de dados
 
-            if ($novo_tipo == 'lista') {
+            if ($novo_tipo == 'linhas') {
                 $lista = array_map('trim', $lista);
 
                 $lista = implode("#,@SEPARATOR_LINES@,#", $lista);
@@ -79,25 +80,41 @@
                 $novo_nome = encrypt_aes_gcm($novo_nome, $_SESSION['senha']);
             }
 
-            $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
+            // Verifica se o nome já existe no banco de dados
 
-            $nome_lista = $novo_nome;
+            $stmt = $pdo->prepare('SELECT id FROM listas WHERE nome_lista = ?');
+            $stmt->execute([$novo_nome]);
+            $nome_existente = $stmt->fetch();
 
-            if(str_contains($nome_lista, "+")){
-                $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
+
+            if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
+                $error = "";
+                $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
+
+
+                $nome_lista = $novo_nome;
+
+                if(str_contains($nome_lista, "+")){
+                    $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
+                }
+
+                header("Location: painel.php?lista=" . $nome_lista);
+                exit();
             }
-
-            header("Location: painel.php?lista=" . $nome_lista);
-            exit();
+            else{
+                $error = "O nome: " . $_POST['nome'] . ", já existe!";
+            }
         }
-        if(isset($_POST['nome_lista'])){
-            if($_POST['nome_lista'] == $_SESSION['type_lista'][2]){
+
+        if(isset($_POST['deletar_lista'])){
+            if($_POST['deletar_lista'] == $_SESSION['type_lista'][2]){
                 $stmt = $pdo->prepare('DELETE FROM listas WHERE id = ?');
                 $stmt->execute([$_SESSION['type_lista'][0]]);
 
                 header('Location: selecionar_lista.php');
+                exit();
             }
         }
     }
@@ -137,6 +154,7 @@
                 display: flex;
                 width: 100%;
                 height: 100%;
+                margin-top: 60px;
                 align-items: center;
                 flex-direction: column;
                 justify-content: center;
@@ -223,6 +241,21 @@
             }
 
             .deletar:hover{
+                background: none;
+            }
+
+            .key{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                background: none;
+                width: 50px;
+                height: 50px;
+                margin: 0;
+            }
+
+            .key:hover{
                 background: none;
             }
 
@@ -385,8 +418,19 @@
                 border: none;
             }
 
+            .input-mudar-nome{
+                background-color: white;
+                width: 90%;
+                height: 20px;
+                color: black;
+            }
+
             .form-delete{
                 gap: 20px;
+            }
+
+            .error{
+                color: red;
             }
 
             @media (max-width: 600px) {
@@ -404,16 +448,16 @@
         </style>
 
     </head>
+    <?php require ("frame_painel.php") ?>
     <body class="principal">
         <div id="certeza_deletar" class="certeza-deletar">
             <form method="POST" class="form-delete" action="">
                 <h1>Tem certeza que deseja deletar a lista: <?php echo $_SESSION['type_lista'][2] ?>?</h1>
                 <h3>Digite o nome da lista para deletar</h3>
-                <input placeholder="Digite o nome da lista" class="input-delete" type="text" name="nome_lista">
-                <button type="submit">Deletar</button>
+                <input id="input_delete" placeholder="Digite o nome da lista" class="input-delete" type="text" name="deletar_lista">
+                <button id="button_deletar" type="submit">Voltar</button>
             </form>
         </div>
-        <?php require ("frame_painel.php") ?>
 
         <form id="envia" method="POST" action="">
             <div class="inputs-container">
@@ -444,10 +488,11 @@
                         </ul>
                     </div>
                 </div>
+                <p class="error"><?php echo $error ?? ""; ?></p>
                 <div id="inputs-container" class="inputs-container">
                     <?php 
                     $lista = explode("#,@SEPARATOR_LINES@,#", $texto);
-                    foreach($lista as $item): 
+                    foreach($lista as $item):
                     ?>
                 <div class="items">
                     <p class="numerador"><?php $cont ++;
@@ -460,10 +505,13 @@
                         ...
                         <ul>
                             <li>
-                                <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png" title="Deletar"></button>
+                                <button type="button" class='deletar' title="Deletar"><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                             </li>
                             <li>
-                                <button type="submit" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
+                                <button type="button" class="key" title="Esconder conteúdo"><img src="img/key.png"></button>
+                            </li>
+                            <li>
+                                <button type="button" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
                             </li>
                             <li>
                                 <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
@@ -479,7 +527,7 @@
                     
                 </div>
                 <div class="btns-out">
-                    <button type="submit" class="salvar">Salvar</button>
+                    <button type="button" data-submit="true" class="salvar">Salvar</button>
                     <a href="selecionar_lista.php">
                         <button type="button" class="bloco">Voltar para listas</button>
                     </a>
@@ -497,11 +545,24 @@
         const btnAdicionar = document.getElementById('adicionar')
         const btnDeletar = document.getElementById('deletar')
 
+        container.querySelectorAll(".items").forEach((item) => {
+            const input = item.children[1]
+            if (input.value.includes("#,@LINE_DIVIDER@,#")){
+                input.value = input.value.replace("#,@LINE_DIVIDER@,#", "")
+                item.insertAdjacentHTML('afterend', '<hr>')
+            }
+
+            if(input.value.includes("#,@SECRET_PASSWORD@,#")){
+                input.value = input.value.replace("#,@SECRET_PASSWORD@,#", "")
+                input.type = "password"
+            }
+        });
+
         btnAdicionar.addEventListener('click', (event) => {
             const input = document.createElement('input');
             const last = event.target.previousElementSibling;
-            let numero = last.querySelector('p').innerText;
-            numero = parseInt(numero) +1
+            console.log(last)
+            let numero = 1
 
             const html = `
                 <div class="items">
@@ -515,7 +576,7 @@
                                 <button type="button" class='deletar'><img class="icon-lixeira" src="img/lixeira-branca.png" title="Deletar"></button>
                             </li>
                             <li>
-                                <button type="submit" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
+                                <button type="button" data-submit="true" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
                             </li>
                             <li>
                                 <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
@@ -530,16 +591,17 @@
 
             last.insertAdjacentHTML('afterend', html)
 
-            console.log(last)
+            salvar()
         });
 
         container.addEventListener('click', (event) => {
-            const botao = event.target.closest('.deletar');
+            const botao_deletar = event.target.closest('.deletar');
             const botao_copy = event.target.closest('.copy')
             const botao_divisoria = event.target.closest('.divisoria')
             const botao_linha = event.target.closest('.linha')
+            const botao_key = event.target.closest(".key")
 
-            if (botao) {
+            if (botao_deletar) {
                 const deletar = event.target.closest('.items')
                 deletar.remove()
             }
@@ -567,15 +629,27 @@
                 `;
 
                 div_items.insertAdjacentHTML('afterend', html)
+
+                salvar()
             }
 
             if (botao_divisoria) {
                 const div_items = event.target.closest('.items')
                 if (div_items.nextElementSibling.tagName != "HR"){
-                    div_items.insertAdjacentHTML('afterend', '<hr>')
+                    div_items.insertAdjacentHTML('afterend', '<hr name="hr">')
                 }
                 else{
                     div_items.nextElementSibling.remove()
+                }
+            }
+
+            if (botao_key) {
+                input = event.target.closest('.items').querySelector('input')
+                if (input.type == "password"){
+                    input.type = "text"
+                }
+                else{
+                    input.type = "password"
                 }
             }
         });
@@ -583,8 +657,33 @@
     // Salvar alterações na lista
 
     function salvar() {
-            document.getElementById("envia").submit()
+        const elementos = container.children
+
+        if(container.querySelector("hr")){
+            let cont = 0
+
+            while(cont < elementos.length){
+                if(elementos[cont].tagName == "HR"){
+                    input = elementos[cont-1].querySelector('input')
+                    input.value += "#,@LINE_DIVIDER@,#"
+                }
+                
+                cont++
+            }
         }
+
+        container.querySelectorAll('input').forEach((item) => {
+            if (item.type == "password") {
+                item.value += "#,@SECRET_PASSWORD@,#"
+            }
+        });
+
+        document.getElementById("envia").submit()
+    }
+
+    document.querySelectorAll("button[data-submit='true']").forEach(btn => {
+        btn.addEventListener('click', salvar);
+    })
 
     document.getElementById("input_mudar_nome").addEventListener('change', () => {
         salvar();
@@ -597,5 +696,15 @@
     document.getElementById("deletar_lista").addEventListener('click', () => {
         div_deletar.style.display = "flex";
     });
+
+    document.getElementById('input_delete').addEventListener('input', () => {
+        const botao_deletar = document.getElementById('button_deletar');
+        if (document.getElementById('input_delete').value == "<?php echo $_SESSION['type_lista'][2]; ?>"){
+            botao_deletar.textContent = "Deletar"
+        }
+        else{
+            botao_deletar.textContent = "Voltar"
+        }
+    })
 </script>
 </html> 

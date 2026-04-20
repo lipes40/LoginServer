@@ -1,27 +1,57 @@
 <?php
 
+use LDAP\Result;
+
     require('protect.php');
     require('connector.php');
     require('cripto.php');
 
+    $mostrar = "";
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        $nome_lista = $_POST['nome'];
         $tipo = $_POST['tipo'];
+        $mostra_tipo = ($tipo == "bloco") ? ["bloco", "Bloco"] : ["linhas", "Linhas"];
+        $nao_mostra_tipo = ($tipo == "bloco") ? ["linhas", "Linhas"] : ["bloco", "Bloco"];
+
         $visibilidade = $_POST['visibilidade'];
+        $mostra_visibilidade = ($visibilidade == "publico") ? ["publico", "Público"]: ["privado", "Privado"];
+        $nao_mostra_visibilidade = ($visibilidade == "publico") ? ["privado", "Privado"]: ["publico", "Público"];
 
-        if($visibilidade == 'privado'){
-            $nome_lista = encrypt_aes_gcm($nome_lista, $_SESSION['senha']);
-        }
+        $nome_lista = $_POST['nome'];
+        if ($nome_lista != '') {
+            $lista = '';
 
-        $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade) VALUES (?, ?, ?, ?, ?)');
-        $stmt->execute([$_SESSION['id'], $nome_lista, "", $tipo, $visibilidade]);
+            if($visibilidade == 'privado'){
+                $nome_lista = encrypt_aes_gcm($nome_lista, $_SESSION['senha']);
+                $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
+            }
 
-        if(str_contains($nome_lista, "+")){
-            $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
-        }
 
-        header("Location: painel.php?lista=" . $nome_lista);
+            // Verifica se o nome já existe no banco
+
+            $stmt = $pdo->prepare('SELECT nome_lista FROM listas WHERE nome_lista = ?');
+            $stmt->execute([$nome_lista]);
+            $resultado = $stmt->fetch();
+
+            // Se não existir cria a lista
+
+            if (!$resultado){
+                $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade) VALUES (?, ?, ?, ?, ?)');
+                $stmt->execute([$_SESSION['id'], $nome_lista, $lista, $tipo, $visibilidade]);
+
+                if(str_contains($nome_lista, "+")){
+                    $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 
+                }
+
+                header("Location: painel.php?lista=" . $nome_lista);
+                
+                exit();
+            }
+        }  
+
+        $mostrar = "Nome inválido";
     }
+        
 
     require('frame_painel.php')
 
@@ -34,7 +64,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crie sua lista!</title>
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
-    <style>
+    <style> 
         body{
             display: flex;
             align-items: center;
@@ -133,6 +163,10 @@
             height: 100%;
             width: 70%;
         }
+
+        .saida{
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -142,14 +176,14 @@
 
         <label for="">Tipo</label>
         <select name="tipo" id="">
-            <option value="lista">Listas</option>
-            <option value="bloco">Bloco</option>
+            <option value="<?php echo $mostra_tipo[0] ?? "linhas"; ?>"><?php echo $mostra_tipo[1] ?? "Linhas"; ?></option>
+            <option value="<?php echo $nao_mostra_tipo[0] ?? "bloco"; ?>"><?php echo $nao_mostra_tipo[1] ?? "Bloco" ?></option>
         </select>
 
         <label for="">Visibilidade:</label>
         <select name="visibilidade" id="">
-            <option value="privado">Privada</option>
-            <option value="publico">Pública</option>
+            <option value="<?php echo $mostra_visibilidade[0] ?? "privado"; ?>"><?php echo $mostra_visibilidade[1] ?? "Privada"; ?></option>
+            <option value="<?php echo $nao_mostra_visibilidade[0] ?? "publico"; ?>"><?php echo $nao_mostra_visibilidade[1] ?? "Pública" ?></option>
         </select>
 
         <button>Criar</button>
@@ -158,5 +192,6 @@
         <a href="selecionar_lista.php" class="new-list">Voltar</a>
         <a class="btn-sair" href="logout.php">Sair</a>
     </div>
+    <p class="saida"><?php echo $mostrar ?? "" ?></p>
 </body>
 </html>
