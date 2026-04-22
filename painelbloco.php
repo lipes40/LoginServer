@@ -17,9 +17,16 @@
 
     // Puxa os dados com base no get lista ja tratado
 
-    $sql = "SELECT * FROM listas WHERE user_id = ? AND nome_lista = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$_SESSION['id'], $name_list]);
+    if(isset($_SESSION['id'])){
+        $sql = "SELECT * FROM listas WHERE user_id = ? AND nome_lista = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$_SESSION['id'], $name_list]);
+    }
+    else{
+        $sql = "SELECT * FROM listas WHERE nome_lista = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$name_list]);
+    }
 
     $_SESSION['type_lista'] = $stmt->fetch();
 
@@ -77,6 +84,7 @@
             $novo_nome = trim($_POST['nome']);
             $estado = $_POST['visibilidade'];
             $novo_tipo = $_POST['tipo'];
+            $list_edit = $_POST['editavel'] ?? "nao editavel";
 
 
             if ($estado == 'privado') {
@@ -91,10 +99,18 @@
             $nome_existente = $stmt->fetch();
 
             if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
-                $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
-            
+
+                if(isset($_SESSION['id'])){
+                    $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE id = ?';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $list_edit, $_SESSION["type_lista"][0]]);
+                }
+                else{
+                   $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE nome_lista = ?';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $list_edit, $name_list]); 
+                }
+
                 $nome_lista = $novo_nome;
 
                 if(str_contains($nome_lista, "+")){
@@ -130,6 +146,34 @@
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
     
     <style>
+        body{
+            background-color: #111111;
+        }
+
+        h2{
+            color: white;
+        }
+
+        button{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #8A2BE2;
+            color: white;
+            border: none;
+            height: 50px;
+            width: 200px;
+            border-radius: 15px;
+            font-family: "arial", sans-serif;
+            margin-bottom: 10px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        button:hover{
+            transform: scale(1.05);
+            background-color: #7B68EE;
+            color: black;
+        }
+
         p {
             color: white
         }
@@ -196,8 +240,11 @@
         }
 
         .btns-out{
-            justify-content: center;
+            width: 80%;
+            justify-content: space-around;
             margin-top: 10px;
+            align-items: center;
+            flex-direction: row;
             display: flex;
         }
 
@@ -218,10 +265,11 @@
 
         ul{
             position: absolute;
-            bottom: 100%;
+            top: 100%;
             right: -100%;
             background-color: #8A2BE2;
             margin-right: 10px;
+            margin: 0;
             display: none;
             align-items: center;
             justify-content: center;
@@ -232,6 +280,18 @@
 
         ul:hover{
             display: flex;
+        }
+
+        .ul-info-list{
+                padding: 10px;
+                gap: 10px;
+                flex-direction: row;
+        }   
+        
+        .li-info-list{
+                padding: 10px;
+                border-radius: 15px;
+                background-color: #111111;
         }
 
         .list-info{
@@ -256,17 +316,20 @@
             background: none;
         }
 
+
+
         .delete{
                 background-color: #8B0000;
+                padding: 10px;
                 width: 100%;
                 height: 100%;
                 border-radius: 15px;
                 margin: 10px;
             }
 
-        .delete:hover{
-            background-color: #7B0000;
-        }
+            .delete:hover{
+                background-color: #7B0000;
+            }
 
         .certeza-deletar{
             display: none;
@@ -295,6 +358,10 @@
             background-color: black;
             color: white;
             border-radius: 15px;
+            border: none;
+        }
+
+        input{
             border: none;
         }
 
@@ -334,33 +401,43 @@
                 <button type="button" data-submit="true">Deletar</button>
             </form>
         </div>
-    <?php require ("frame_painel.php") ?>
+    <?php if (isset($_SESSION['id'])){ require ("frame_painel.php"); } ?>
     <form id="envia" method="post" action="">
 
     <div class="list-info">
     <h2><?php echo $_SESSION['type_lista'][2] ?></h2>
     <div class="dropdown">
         <img src="img/informacoes.png" alt="">
-        <ul>
-            <li>
+        <ul class="ul-info-list">
+            <li class="li-info-list">
                 <p>Nome Da Lista:</p>
                     <input id="input_mudar_nome" class="input-mudar-nome" name="nome" type="text" value="<?php echo $_SESSION['type_lista'][2] ?>">
             </li>
-            <li>
+            <li class="li-info-list">
                 <label for="">Visibilidade:</label>
                 <select name="visibilidade" id="visibilidade" onchange="salvar()">
                     <option value="<?php echo $visibilidade[0][0] ?>"><?php echo $visibilidade[1][0]?></option>
                     <option value="<?php echo $visibilidade[0][1] ?>"><?php echo $visibilidade[1][1]?></option>
                 </select>
             </li>
-            <li>
+            <?php if ($_SESSION['type_lista'][5] == "publico"): ?>
+                <li class="li-info-list">
+                    <label for="">Editavel pelo público: </label>
+                    <?php if($_SESSION['type_lista'][6] == "editavel"): ?>
+                        <input id="edit_public" type="checkbox" checked value="editavel" name="editavel">
+                    <?php else: ?>
+                        <input id="edit_public" type="checkbox" value="editavel" name="editavel">
+                    <?php endif ?>
+                </li>
+            <?php endif ?>
+            <li class="li-info-list">
                 <label for="">Tipo da lista:</label>
                 <select name="tipo" id="" onchange="salvar()">
                     <option value="<?php echo $tipo[0][0] ?>"><?php echo $tipo[1][0] ?></option>
                     <option value="<?php echo $tipo[0][1] ?>"><?php echo $tipo[1][1] ?></option>
                 </select>
             </li>
-            <li class="checkbox">
+            <li  class="li-info-list" class="checkbox">
                 <p>Link redirecionável:</p>
                 <input id="checkbox" class="checkbox" type="checkbox" value="">
             </li>
@@ -375,13 +452,21 @@
                 <textarea id="text" type="text" placeholder="Adicione algo" name="items"><?php {echo htmlspecialchars(trim($lista));}?></textarea>
                 </div>
             </div>
-            <div class="btns-out">
-                <button class="salvar" type="button" data-submit="true">Salvar</button>
-                <a href="selecionar_lista.php">
-                <button type="button" class="add" id="adicionar">Voltar para Listas</button>
-                </a>
-                <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
-            </div>
+
+            <?php if(isset($_SESSION['id'])): ?>
+                <div class="btns-out">
+                    <button class="salvar" type="button" data-submit="true">Salvar</button>
+                    <a href="selecionar_lista.php">
+                    <button type="button" class="add" id="adicionar">Voltar para Listas</button>
+                    </a>
+                    <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
+                </div>
+            <?php else: ?>
+                <div class="btns-out">
+                    <button class="salvar" type="button" data-submit="true">Salvar</button>
+                    <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
+                </div>
+            <?php endif ?>
         </div>
         
 
@@ -414,6 +499,15 @@
     document.querySelectorAll("button[data-submit='true']").forEach(btn => {
         btn.addEventListener('click', salvar);
     })
+
+    <?php if($_SESSION['type_lista'][5] == "publico"): ?>
+        console.log("abc")
+
+        document.getElementById('edit_public').addEventListener("change", () => {
+            salvar()
+    })
+
+    <?php endif ?>
     
     function salvar() {
         if (checkbox.checked){

@@ -36,8 +36,8 @@ use LDAP\Result;
             // Se não existir cria a lista
 
             if (!$resultado){
-                $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade) VALUES (?, ?, ?, ?, ?)');
-                $stmt->execute([$_SESSION['id'], $nome_lista, $lista, $tipo, $visibilidade]);
+                $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade, publico_editavel) VALUES (?, ?, ?, ?, ?, ?)');
+                $stmt->execute([$_SESSION['id'], $nome_lista, $lista, $tipo, $visibilidade, "nao_editavel"]);
 
                 if(str_contains($nome_lista, "+")){
                     $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 

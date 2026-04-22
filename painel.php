@@ -1,5 +1,12 @@
 <?php
-    require ('protect.php');
+    if(!isset($_SESSION)) {
+    session_start();
+    }
+
+    if(!isset($_SESSION['id']) && !isset($_SESSION['publico'])) {
+        header("Location: index.php");
+        exit;
+    }
     require ('connector.php');
     require ('cripto.php');
 
@@ -8,12 +15,20 @@
         header("Location: selecionar_lista.php");
         exit();
     }
+
     $name_list = urldecode($name_list);
     $name_list = str_replace("strcontainmais", "+", $name_list);
 
-    $sql = "SELECT * FROM listas WHERE user_id = ? AND nome_lista = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$_SESSION['id'], $name_list]);
+    if(isset($_SESSION['id'])){
+        $sql = "SELECT * FROM listas WHERE user_id = ? AND nome_lista = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$_SESSION['id'], $name_list]);
+    }
+    else{
+        $sql = "SELECT * FROM listas WHERE nome_lista = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$name_list]);
+    }
 
     $_SESSION['type_lista'] = $stmt->fetch();
 
@@ -57,6 +72,8 @@
         if (isset($_POST['items'])){
             $lista = $_POST["items"];
 
+            $list_edit = $_POST['editavel'] ?? "nao editavel";
+
             $novo_nome = trim($_POST['nome']);
 
             $estado = $_POST['visibilidade'];
@@ -89,9 +106,18 @@
 
             if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
                 $error = "";
-                $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ? WHERE id = ?';
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $_SESSION["type_lista"][0]]);
+
+                if(isset($_SESSION['id'])){
+                    $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE id = ?';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $list_edit, $_SESSION["type_lista"][0]]);
+                }
+                
+                else{
+                    $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE nome_lista = ?';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $list_edit, $name_list]);
+                }
 
 
                 $nome_lista = $novo_nome;
@@ -129,8 +155,41 @@
         <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
         
         <style>
+            *{
+            padding: 0;
+            margin: 0;
+            font-family: "arial", sans-serif;
+            }
+        
             p {
                 color: white
+            }
+            
+            body{
+                display: flex;
+                flex-direction: column;
+                background-color: #111111;
+                overflow-x: hidden;
+            }
+
+            button{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #8A2BE2;
+            color: white;
+            border: none;
+            height: 50px;
+            width: 200px;
+            border-radius: 15px;
+            font-family: "arial", sans-serif;
+            margin-bottom: 10px;
+            transition: 0.2s;
+            cursor: pointer;
+            }
+
+            button:hover{
+                transform: scale(1.05);
+                background-color: #7B68EE;
+                color: black;
             }
 
             .sair{
@@ -161,10 +220,6 @@
                 text-decoration: none;
             }
 
-            button{
-                justify-self: center;
-            }
-
             a{
                 justify-self: center;
             }
@@ -184,6 +239,10 @@
                 display: flex;
                 width: 100%;
                 height: 70%;
+            }
+
+            h2{
+                color: white;
             }
 
             .inputs-container{
@@ -217,16 +276,11 @@
 
             .btns-out{
                 width: 80%;
-                justify-content: center;
+                justify-content: space-around;
                 margin-top: 10px;
-                justify-content: center;
                 align-items: center;
-                grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-                display: grid;
-            }
-
-            .bloco{
-                margin-right: 5px;
+                flex-direction: row;
+                display: flex;
             }
 
             .deletar{
@@ -256,6 +310,21 @@
             }
 
             .key:hover{
+                background: none;
+            }
+
+            .imagem{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                background: none;
+                width: 50px;
+                height: 50px;
+                margin: 0;
+            }
+
+            .imagem:hover{
                 background: none;
             }
 
@@ -325,6 +394,14 @@
                 height: 3px;
             }
 
+            .list-info{
+                display: flex;
+                gap: 5px;
+                align-items: center;
+                justify-content: center;
+                flex-direction: row;
+            }
+
             .dropdown{
                 color: white;
                 position: relative;
@@ -336,30 +413,35 @@
             }
 
             ul{
+                z-index: 10;
                 position: absolute;
-                bottom: 100%;
+                top: 100%;
                 right: -100%;
                 background-color: #8A2BE2;
-                margin-right: 10px;
                 display: none;
                 align-items: center;
                 justify-content: center;
                 border-radius: 15px;
                 flex-direction: column;
                 list-style: none;
+                padding: 0;
             }
 
             ul:hover{
                 display: flex;
             }
 
-            .list-info{
-                display: flex;
-                gap: 5px;
-                align-items: center;
-                justify-content: center;
+            .ul-info-list{
+                padding: 10px;
+                gap: 10px;
                 flex-direction: row;
             }   
+
+            .li-info-list{
+                padding: 10px;
+                border-radius: 15px;
+                background-color: #111111;
+            }
 
             .img-info{
                 align-self: center;
@@ -378,6 +460,7 @@
 
             .delete{
                 background-color: #8B0000;
+                padding: 10px;
                 width: 100%;
                 height: 100%;
                 border-radius: 15px;
@@ -448,7 +531,8 @@
         </style>
 
     </head>
-    <?php require ("frame_painel.php") ?>
+    <?php if (isset($_SESSION['id'])){ require ("frame_painel.php"); } ?>
+
     <body class="principal">
         <div id="certeza_deletar" class="certeza-deletar">
             <form method="POST" class="form-delete" action="">
@@ -465,19 +549,29 @@
                     <h2 class="name_lista"><?php echo  $_SESSION['type_lista'][2] ?></h2>
                     <div class="dropdown">
                         <img class="img-info" src="img/informacoes.png" alt="">
-                        <ul>
-                            <li>
+                        <ul class="ul-info-list">
+                            <li class="li-info-list">
                                 <label for="">Nome Da Lista:</label>
                                 <input id="input_mudar_nome" class="input-mudar-nome" name="nome" type="text" value="<?php echo $_SESSION['type_lista'][2] ?>">
                             </li>
-                            <li>
+                            <li class="li-info-list">
                                 <label for="">Visibilidade:</label>
                                 <select name="visibilidade" id="visibilidade" onchange="salvar()">
                                     <option value="<?php echo $visibilidade[0][0] ?>"><?php echo $visibilidade[1][0] ?></option>
                                     <option value="<?php echo $visibilidade[0][1] ?>"><?php echo $visibilidade[1][1] ?></option>
                                 </select>
                             </li>
-                            <li>
+                            <?php if ($_SESSION['type_lista'][5] == "publico"): ?>
+                                <li class="li-info-list">
+                                    <label for="">Editavel pelo público: </label>
+                                    <?php if($_SESSION['type_lista'][6] == "editavel"): ?>
+                                        <input id="edit_public" type="checkbox" checked value="editavel" name="editavel">
+                                    <?php else: ?>
+                                        <input id="edit_public" type="checkbox" value="editavel" name="editavel">
+                                    <?php endif ?>
+                                </li>
+                            <?php endif ?>
+                            <li class="li-info-list">
                                 <label for="">Tipo da lista:</label>
                                 <select name="tipo" id="" onchange="salvar()">
                                     <option value="<?php echo $tipo[0][0] ?>"><?php echo $tipo[1][0] ?></option>
@@ -511,6 +605,9 @@
                                 <button type="button" class="key" title="Esconder conteúdo"><img src="img/key.png"></button>
                             </li>
                             <li>
+                                <button type="button" class="imagem"><img src="img/imagem.png"></button>
+                            </li>
+                            <li>
                                 <button type="button" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
                             </li>
                             <li>
@@ -526,13 +623,21 @@
                     <button type="button" class="add" id="adicionar">Adicionar Linha</button>
                     
                 </div>
-                <div class="btns-out">
-                    <button type="button" data-submit="true" class="salvar">Salvar</button>
-                    <a href="selecionar_lista.php">
-                        <button type="button" class="bloco">Voltar para listas</button>
-                    </a>
-                    <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
-                </div>
+
+                <?php if(isset($_SESSION['id'])): ?>
+                    <div class="btns-out">
+                        <button type="button" data-submit="true" class="salvar">Salvar</button>
+                        <a href="selecionar_lista.php">
+                            <button type="button" class="bloco">Voltar para listas</button>
+                        </a>
+                        <a class="base-line" href="logout.php"><button type="button" class="sair">Sair</button></a>
+                    </div>
+                <?php else: ?>
+                    <div class="btns-out">
+                        <button type="button" data-submit="true" class="salvar">Salvar</button>
+                        <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
+                    </div>
+                <?php endif ?>
             </div>
         </form>
     </body>
@@ -555,6 +660,14 @@
             if(input.value.includes("#,@SECRET_PASSWORD@,#")){
                 input.value = input.value.replace("#,@SECRET_PASSWORD@,#", "")
                 input.type = "password"
+            }
+
+            if(input.value.includes("#,@LINK_IMG@,#")){
+                input.value.replace("#,@LINK_IMG@,#", "")
+                const img = document.createElement('img')
+                img.src = input.value.replace("#,@LINK_IMG@,#", "")
+                img.className = "link-imagem"
+                input.replaceWith(img)
             }
         });
 
@@ -600,6 +713,7 @@
             const botao_divisoria = event.target.closest('.divisoria')
             const botao_linha = event.target.closest('.linha')
             const botao_key = event.target.closest(".key")
+            const botao_imagem = event.target.closest(".imagem")
 
             if (botao_deletar) {
                 const deletar = event.target.closest('.items')
@@ -644,12 +758,34 @@
             }
 
             if (botao_key) {
-                input = event.target.closest('.items').querySelector('input')
+                const input = event.target.closest('.items').querySelector('input')
                 if (input.type == "password"){
                     input.type = "text"
                 }
                 else{
                     input.type = "password"
+                }
+            }
+
+            if (botao_imagem) {
+                const div_items = event.target.closest('.items')
+                if (div_items.querySelector('input')){
+                    div_items.querySelector('input').value += "#,@LINK_IMG@,#"
+                    salvar()
+                }
+                else{
+                    const text = div_items.querySelector('img')
+                    const input = document.createElement('input')
+                    if (text.src === window.location.href){
+                        input.value = ""
+                    }
+                    else{
+                        input.value = text.src
+                    }
+                    input.placeholder = "Adicione algo"
+                    input.type = "text"
+                    input.name = "items[]"
+                    text.replaceWith(input)
                 }
             }
         });
@@ -658,6 +794,16 @@
 
     function salvar() {
         const elementos = container.children
+
+        container.querySelectorAll('.link-imagem').forEach((item) => {
+            console.log(item)
+            const img_to_input = document.createElement('input')
+            img_to_input.value = item.src + "#,@LINK_IMG@,#"
+            img_to_input.type = "text"
+            img_to_input.name = "items[]"
+            console.log(img_to_input)
+            item.replaceWith(img_to_input)
+        });
 
         if(container.querySelector("hr")){
             let cont = 0
@@ -680,6 +826,14 @@
 
         document.getElementById("envia").submit()
     }
+
+    <?php if($_SESSION['type_lista'][5] == "publico"): ?>
+
+        document.getElementById('edit_public').addEventListener("change", () => {
+            salvar()
+        })
+
+    <?php endif ?>
 
     document.querySelectorAll("button[data-submit='true']").forEach(btn => {
         btn.addEventListener('click', salvar);

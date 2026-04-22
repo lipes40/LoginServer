@@ -16,7 +16,15 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$name_list, "publico"]);
 
 $resultado = $stmt->fetch();
+
 if ($resultado){
+    if ($resultado[6] == "editavel"){
+        session_start();
+        $_SESSION['publico'] = true;
+        header("Location: painel.php?lista=" . urlencode($name_list));
+        exit();
+    }
+    
     $title = $resultado[2];
     $estado = $resultado[4];
     $lista = $resultado[3];
@@ -203,5 +211,25 @@ else{
         let input = div_items.querySelector('input')
         navigator.clipboard.writeText(input.value)
     })
+
+    container.querySelectorAll(".items").forEach((item) => {
+            const input = item.children[1]
+            if (input.value.includes("#,@LINE_DIVIDER@,#")){
+                input.value = input.value.replace("#,@LINE_DIVIDER@,#", "")
+                item.insertAdjacentHTML('afterend', '<hr>')
+            }
+
+            if(input.value.includes("#,@SECRET_PASSWORD@,#")){
+                input.parentElement.remove()
+            }
+
+            if(input.value.includes("#,@LINK_IMG@,#")){
+                input.value.replace("#,@LINK_IMG@,#", "")
+                const img = document.createElement('img')
+                img.src = input.value.replace("#,@LINK_IMG@,#", "")
+                img.className = "link-imagem"
+                input.replaceWith(img)
+            }
+    });
 </script>
 </html>

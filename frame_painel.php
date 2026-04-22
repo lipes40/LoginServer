@@ -59,9 +59,8 @@ require ("connector.php");
         }
 
         .mostrar{   
-            height: 70%;
-            margin-right: 5px;
             cursor: pointer;
+            margin-right: 50px;
         }
 
         .conjunto{
