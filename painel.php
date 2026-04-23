@@ -53,12 +53,7 @@
         $visibilidade = [["publico", "privado"], ["Público", "Privado"]];
     }
 
-    if ($_SESSION['type_lista'][4] == "lista"){
-        $tipo = [["bloco", "linhas"], ["Bloco", "Linhas"]];
-    }
-    else{
-        $tipo = [["linhas", "bloco"], ["Linhas", "Bloco"]];
-    }
+    $tipo = [["linhas", "bloco"], ["Linhas", "Bloco"]];
 
     $mostrar = true;
 
@@ -87,6 +82,9 @@
                 $lista = implode("#,@SEPARATOR_LINES@,#", $lista);
             }
             else{
+                $lista = str_replace("#,@SECRET_PASSWORD@,#", "", $lista);
+                $lista = str_replace("#,@LINE_DIVIDER@,#", "", $lista);
+                $lista = str_replace("#,@LINK_IMG@,#", "", $lista);
                 $lista = implode("\n", $lista);
             }
 
@@ -95,6 +93,7 @@
             if ($estado == "privado") {
                 $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
                 $novo_nome = encrypt_aes_gcm($novo_nome, $_SESSION['senha']);
+                $list_edit = "nao editavel";
             }
 
             // Verifica se o nome já existe no banco de dados
@@ -829,9 +828,7 @@
 
     <?php if($_SESSION['type_lista'][5] == "publico"): ?>
 
-        document.getElementById('edit_public').addEventListener("change", () => {
-            salvar()
-        })
+        document.getElementById('edit_public').addEventListener("change", salvar)
 
     <?php endif ?>
 
@@ -839,9 +836,7 @@
         btn.addEventListener('click', salvar);
     })
 
-    document.getElementById("input_mudar_nome").addEventListener('change', () => {
-        salvar();
-    })
+    document.getElementById("input_mudar_nome").addEventListener('change', salvar)
 
     // Deletar lista
 

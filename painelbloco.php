@@ -53,12 +53,7 @@
         $visibilidade = [["privado", "publico"], ["Privado", "Público"]];
     }
 
-    if ($_SESSION['type_lista'][4] == "lista"){
-        $tipo = [["lista", "bloco"], ["Lista", "Bloco"]];
-    }
-    else{
-        $tipo = [["bloco", "lista"], ["Bloco", "Lista"]];
-    }
+    $tipo = [["bloco", "linhas"], ["Bloco", "Linhas"]];
 
     $_SESSION['bloco'] = $_SESSION['type_lista'][3];
     
@@ -87,9 +82,16 @@
             $list_edit = $_POST['editavel'] ?? "nao editavel";
 
 
+            if ($novo_tipo == "linhas"){
+                $lista = str_replace("#,@LINK_REDIRECT@,#", "", $lista);
+                $lista = str_replace("\n", "#,@SEPARATOR_LINES@,#", $lista);
+            }
+
+
             if ($estado == 'privado') {
                 $novo_nome = encrypt_aes_gcm($novo_nome, $_SESSION['senha']);
                 $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
+                $list_edit = "nao editavel";
             }
 
             // Verifica se o nome já existe no banco de dados
@@ -101,6 +103,7 @@
             if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
 
                 if(isset($_SESSION['id'])){
+                    
                     $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE id = ?';
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute([$novo_nome, $lista, $novo_tipo, $estado, $list_edit, $_SESSION["type_lista"][0]]);
@@ -437,10 +440,13 @@
                     <option value="<?php echo $tipo[0][1] ?>"><?php echo $tipo[1][1] ?></option>
                 </select>
             </li>
+            <?php if($_SESSION['type_lista'][6] == "nao editavel" && $_SESSION['type_lista'][5] == "publico"): ?>
             <li  class="li-info-list" class="checkbox">
                 <p>Link redirecionável:</p>
                 <input id="checkbox" class="checkbox" type="checkbox" value="">
             </li>
+            <?php endif ?>
+
             <button id="deletar_lista" class="delete" type="button">Deletar lista</button>
         </ul>
     </div>
@@ -481,9 +487,19 @@
     const checkbox = document.getElementById('checkbox')
     const text = document.getElementById("text")
 
+    <?php if($_SESSION['type_lista'][6] == "nao editavel" && $_SESSION['type_lista'][5] == "publico"): ?>
+
+        if(text.innerHTML.includes("#,@LINK_REDIRECT@,#")){
+            text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
+            checkbox.checked = true
+        }
+
+        checkbox.addEventListener('change', salvar)
+
+    <?php endif ?>
+
     if(text.innerHTML.includes("#,@LINK_REDIRECT@,#")){
-        text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
-        checkbox.checked = true
+            text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
     }
 
     const div_deletar = document.getElementById('certeza_deletar');
@@ -492,27 +508,24 @@
         div_deletar.style.display = "flex";
     });
 
-    document.getElementById("input_mudar_nome").addEventListener('change', () => {
-        salvar();
-    })
+    document.getElementById("input_mudar_nome").addEventListener('change', salvar)
 
     document.querySelectorAll("button[data-submit='true']").forEach(btn => {
         btn.addEventListener('click', salvar);
     })
 
+
+
     <?php if($_SESSION['type_lista'][5] == "publico"): ?>
-        console.log("abc")
-
-        document.getElementById('edit_public').addEventListener("change", () => {
-            salvar()
-    })
-
+        document.getElementById('edit_public').addEventListener("change", salvar)
     <?php endif ?>
     
     function salvar() {
-        if (checkbox.checked){
-            text.innerHTML += "#,@LINK_REDIRECT@,#"
-        }
+        <?php if($_SESSION['type_lista'][6] == "nao editavel" && $_SESSION['type_lista'][5] == "publico"): ?>
+            if (checkbox.checked){
+                text.innerHTML += "#,@LINK_REDIRECT@,#"
+            }
+        <?php endif ?>
 
         document.getElementById("envia").submit()
     }
