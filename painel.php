@@ -228,6 +228,11 @@
                 width: 20px;
             }
 
+            .link-imagem{
+                width: 300px;
+                height: 100%;
+            }
+
             input {
                 padding-left: 5px;
                 background-color: #111111;
@@ -502,7 +507,7 @@
 
             .input-mudar-nome{
                 background-color: white;
-                width: 90%;
+                width: 100px;
                 height: 20px;
                 color: black;
             }

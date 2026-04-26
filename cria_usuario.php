@@ -26,7 +26,7 @@
         $stmt->execute([$email]);
 
         if ($stmt->rowCount() > 0) {
-            $error = "Esse email ja foi cadastrado!";
+            $error = "Esse nome de usuário ja foi cadastrado!";
         } else {
 
             $lista = encrypt_aes_gcm("", $senha);

@@ -1,7 +1,5 @@
 <?php
 
-use LDAP\Result;
-
     require('protect.php');
     require('connector.php');
     require('cripto.php');
@@ -37,7 +35,7 @@ use LDAP\Result;
 
             if (!$resultado){
                 $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade, publico_editavel) VALUES (?, ?, ?, ?, ?, ?)');
-                $stmt->execute([$_SESSION['id'], $nome_lista, $lista, $tipo, $visibilidade, "nao_editavel"]);
+                $stmt->execute([$_SESSION['id'], $nome_lista, $lista, $tipo, $visibilidade, "nao editavel"]);
 
                 if(str_contains($nome_lista, "+")){
                     $nome_lista = str_replace("+", "strcontainmais", $nome_lista); 

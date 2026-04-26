@@ -87,6 +87,11 @@ else{
             /* margin-top: 150px; */
         }
 
+        img{
+            max-width: 300px;
+            max-height: 100%;
+        }
+
         .items{
             width: 80vw;
             display: flex;
@@ -151,6 +156,7 @@ else{
         }
 
         .buttons{
+            margin-top: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -172,7 +178,7 @@ else{
             foreach($lista as $item): ?>
                 <div class="items">
                     <p><?php $cont++; echo $cont?></p>
-                    <input type="text" value="<?php echo $item ?>">
+                    <input placeholder="Adicione algo" type="text" value="<?php echo $item ?>">
                     <button type="button" class='copy'><img class="icon-clipboard" title="Copiar" src="img/clipboard.png"></button>
                 </div>
             <?php endforeach ?>

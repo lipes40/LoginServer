@@ -159,8 +159,8 @@
         <h3>Insira o nome</h3>
         <input type="text" maxlength="40" name="c-nome" id="name" placeholder="Nome" value="<?php echo $_POST['c-nome'] ?? ''; ?>">
 
-        <h3>Insira o email</h3>
-        <input type="email" maxlength="255" name="c-email" id="email" placeholder="Email" value="<?php echo $_POST['c-email'] ?? ''; ?>">
+        <h3>Insira o nome de usuário</h3>
+        <input type="text" maxlength="255" name="c-email" id="email" placeholder="Nome de usuário" value="<?php echo $_POST['c-email'] ?? ''; ?>">
 
         <h3>Insira a senha</h3>
         <input type="password" minlength="6" name="c-senha" id="senha" placeholder="Senha" value="<?php echo $_POST['c-senha'] ?? ''; ?>">

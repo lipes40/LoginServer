@@ -1,7 +1,14 @@
 <?php
 
     // Adiciona arquivos necessários
-    require ('protect.php');
+    if(!isset($_SESSION)) {
+    session_start();
+    }
+
+    if(!isset($_SESSION['id']) && !isset($_SESSION['publico'])) {
+        header("Location: index.php");
+        exit;
+    }
     require ('connector.php');
     require ('cripto.php');
 
@@ -306,6 +313,7 @@
         }
 
         .input-mudar-nome{
+            width: 100px;
             background-color: white;
         }
 
@@ -400,8 +408,8 @@
             <form method="POST" class="form-delete" action="">
                 <h1>Tem certeza que deseja deletar a lista: <?php echo $_SESSION['type_lista'][2] ?>?</h1>
                 <h3>Digite o nome da lista para deletar</h3>
-                <input placeholder="Digite o nome da lista" class="input-delete" type="text" name="deletar_lista">
-                <button type="button" data-submit="true">Deletar</button>
+                <input id="input_delete" placeholder="Digite o nome da lista" class="input-delete" type="text" name="deletar_lista">
+                <button id="button_deletar" type="submit">Voltar</button>
             </form>
         </div>
     <?php if (isset($_SESSION['id'])){ require ("frame_painel.php"); } ?>
@@ -529,5 +537,15 @@
 
         document.getElementById("envia").submit()
     }
+
+    document.getElementById('input_delete').addEventListener('input', () => {
+        const botao_deletar = document.getElementById('button_deletar');
+        if (document.getElementById('input_delete').value == "<?php echo $_SESSION['type_lista'][2]; ?>"){
+            botao_deletar.textContent = "Deletar"
+        }
+        else{
+            botao_deletar.textContent = "Voltar"
+        }
+    })
 </script>
 </html>

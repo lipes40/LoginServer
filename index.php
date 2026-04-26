@@ -1,6 +1,7 @@
 <?php
 
 require('connector.php');
+require('cripto.php');
 
 session_start();
 
@@ -54,6 +55,36 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
                 $_SESSION['email'] = $usuario['email'];
                 $_SESSION['senha'] = $senha;
                 $_SESSION["cripto_senha"] = $usuario['senha'];
+
+                if($usuario['lista'] != ""){
+                    $nome_lista = encrypt_aes_gcm('Linhas antigas', $_SESSION['senha']);
+                    $lista = decrypt_aes_gcm($usuario['lista'], $_SESSION['senha']);
+                    $lista = str_replace("###,,,@@@", "#,@SEPARATOR_LINES@,#", $lista);
+                    $lista = encrypt_aes_gcm($lista, $_SESSION['senha']);
+                    
+                    $nome_bloco = encrypt_aes_gcm('Bloco antigo', $_SESSION['senha']);
+                    $bloco = $usuario['bloco'];
+
+                    $stmt = $pdo->prepare('INSERT INTO listas (user_id, nome_lista, lista, tipo, visibilidade, publico_editavel) VALUES (?, ?, ?, ?, ?, ?), (?, ?, ?, ?, ?, ?)');
+                    $stmt->execute(
+                        [$_SESSION['id'], 
+                        $nome_lista, 
+                        $lista, 
+                        'linhas', 
+                        'privado', 
+                        'nao editavel',
+                        
+                        $_SESSION['id'], 
+                        $nome_bloco, 
+                        $bloco, 
+                        'bloco', 
+                        'privado', 
+                        'nao editavel',
+                    ]);
+
+                    $stmt = $pdo->prepare("UPDATE usuarios SET lista = ?, bloco = ? WHERE id = ?");
+                    $stmt->execute(['', '', $_SESSION['id']]);
+                }
 
                 header("Location: painel.php");
 
@@ -221,7 +252,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
 
         <h1>Acesse sua conta!</h1>
 
-        <input type="email" id="troca" name="email" placeholder="Email" value="<?php echo $_POST['email'] ?? ''; ?>">
+        <input type="email" id="troca" name="email" placeholder="Nome de usuário" value="<?php echo $_POST['email'] ?? ''; ?>">
 
         <div class="box-senha">
             <input type="password" id="senha" name="senha" class="senha-password" placeholder="Senha">
