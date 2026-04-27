@@ -1,5 +1,6 @@
 <?php 
     require("connector.php");
+    require('cripto.php');
 
     if(!isset($_SESSION)) {
         session_start();
@@ -39,6 +40,49 @@
         elseif(password_verify($senha, $_SESSION['cripto_senha'])) {
             $stmt = $pdo->prepare("UPDATE usuarios SET senha = ? WHERE id = ?");
             $stmt->execute([$criptoSenha, $_SESSION['id']]);
+
+            $stmt = $pdo->prepare("SELECT * FROM listas WHERE user_id = ?");
+            $stmt->execute([$_SESSION['id']]);
+            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if($resultado){
+                $atualizações = [];
+                $when = "";
+                $ids_das_listas = [];
+                $nomes_das_listas = [];
+                $listas = [];
+
+                foreach($resultado as $item){
+                    if($item['visibilidade'] == 'privado'){
+                        $nome_lista = decrypt_aes_gcm($item['nome_lista'], $_SESSION['senha']);
+                        $nome_lista = encrypt_aes_gcm($nome_lista, $newSenha);
+
+                        $lista = decrypt_aes_gcm($item['lista'], $_SESSION['senha']);
+                        $lista = encrypt_aes_gcm($lista, $newSenha);
+
+                        $ids_das_listas[] = $item['id'];
+
+                        $nomes_das_listas[] = $item['id'];
+                        $nomes_das_listas[] = $nome_lista;
+
+                        $listas[] = $item['id'];
+                        $listas[] = $lista;
+
+                        $when = $when . " WHEN ? THEN ?";
+                    }
+                }
+
+                $sql = "UPDATE listas
+                SET 
+                    nome_lista = CASE id" . $when . " END,
+                    lista = CASE id" . $when . " END
+                WHERE id IN (" . implode(",", array_fill(0, count($ids_das_listas), "?")) . ")
+                ";
+
+                $nova_info = array_merge($nomes_das_listas, $listas, $ids_das_listas);
+
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($nova_info);
+            }
 
             header("Location: logout.php");
             exit;

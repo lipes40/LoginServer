@@ -48,7 +48,7 @@
         $_SESSION['type_lista'][2]  = decrypt_aes_gcm($_SESSION['type_lista'][2], $_SESSION['senha']);
     }
 
-    if ($_SESSION['type_lista'][4] == "lista"){
+    if ($_SESSION['type_lista'][4] == "linhas"){
         header("Location: painel.php?lista=" . $_GET['lista']);
         exit();
     }
@@ -249,13 +249,20 @@
             margin-right: 10px;
         }
 
+        a{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .btns-out{
             width: 80%;
             justify-content: space-around;
             margin-top: 10px;
             align-items: center;
-            flex-direction: row;
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+            gap: 5px;
         }
 
         .add{
@@ -267,18 +274,22 @@
             color: white;
             position: relative;
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .dropdown:hover ul{
             display: flex;
         }
 
+        .dropdown:focus ul{
+            display: flex;
+        }
+
         ul{
             position: absolute;
             top: 100%;
-            right: -100%;
             background-color: #8A2BE2;
-            margin-right: 10px;
             margin: 0;
             display: none;
             align-items: center;
@@ -390,14 +401,10 @@
             gap: 5px;
         }
 
-        @media (max-width: 600px) {
-            .btns-out{
+        @media (max-width: 500px) {
+            .ul-info-list{
                 flex-direction: column;
-                align-items: center;
-            }
-
-            input{
-                font-size: large;
+                right: -200%;
             }
         }
     </style>
@@ -469,7 +476,7 @@
 
             <?php if(isset($_SESSION['id'])): ?>
                 <div class="btns-out">
-                    <button class="salvar" type="button" data-submit="true">Salvar</button>
+                    <a href=""><button class="salvar" type="button" data-submit="true">Salvar</button></a>
                     <a href="selecionar_lista.php">
                     <button type="button" class="add" id="adicionar">Voltar para Listas</button>
                     </a>
@@ -477,7 +484,7 @@
                 </div>
             <?php else: ?>
                 <div class="btns-out">
-                    <button class="salvar" type="button" data-submit="true">Salvar</button>
+                    <a href=""><button class="salvar" type="button" data-submit="true">Salvar</button></a>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
                 </div>
             <?php endif ?>

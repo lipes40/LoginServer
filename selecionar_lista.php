@@ -8,6 +8,8 @@
     $stmt->execute([$_SESSION['id']]);
     
     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $mostrar = true
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +25,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         a{
@@ -32,14 +35,15 @@
 
         h1{
             margin-bottom: 50px;
+            text-align: center;
         }
 
         .items{
-            margin-top: 50px;
             display: flex;
             gap: 20px;
+            flex: 1;
             align-items: center;
-            justify-content: center;
+            padding-top: 50px;
             width: 90vw;
             flex-direction: column;
         }
@@ -86,7 +90,6 @@
             justify-content: center;
             margin-bottom: 20px;
             bottom: 0;
-            position: absolute;
             width: 100%;
             flex-direction: row;
             gap: 20px;
@@ -124,11 +127,21 @@
             transform: scale(1.05);
             background-color: #7B68EE;
         }
+
+        @media (max-height: 550px) {
+            h1{
+                margin-bottom: 0;
+            }
+            .items{
+                padding-top: 0;
+            }
+        }
     </style>
 
 </head>
 <body>
     <?php require("frame_painel.php"); ?>
+    
     <div class="items">
         <h1>Escolha sua lista</h1>
         <div class="listas">

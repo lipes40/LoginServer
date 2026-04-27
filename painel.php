@@ -172,17 +172,17 @@
             }
 
             button{
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #8A2BE2;
-            color: white;
-            border: none;
-            height: 50px;
-            width: 200px;
-            border-radius: 15px;
-            font-family: "arial", sans-serif;
-            margin-bottom: 10px;
-            transition: 0.2s;
-            cursor: pointer;
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: #8A2BE2;
+                color: white;
+                border: none;
+                height: 50px;
+                width: 200px;
+                border-radius: 15px;
+                font-family: "arial", sans-serif;
+                margin-bottom: 10px;
+                transition: 0.2s;
+                cursor: pointer;
             }
 
             button:hover{
@@ -283,8 +283,9 @@
                 justify-content: space-around;
                 margin-top: 10px;
                 align-items: center;
-                flex-direction: row;
-                display: flex;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+                gap: 5px;
             }
 
             .deletar{
@@ -410,9 +411,15 @@
                 color: white;
                 position: relative;
                 display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .dropdown:hover ul{
+                display: flex;
+            }
+
+            .dropdown:focus ul{
                 display: flex;
             }
 
@@ -437,6 +444,8 @@
 
             .ul-info-list{
                 padding: 10px;
+                right: auto;
+                left: auto;
                 gap: 10px;
                 flex-direction: row;
             }   
@@ -445,6 +454,12 @@
                 padding: 10px;
                 border-radius: 15px;
                 background-color: #111111;
+            }
+
+            select{
+                width: 100%;
+                min-width: 60px;
+                border-radius: 15px;
             }
 
             .img-info{
@@ -507,8 +522,10 @@
 
             .input-mudar-nome{
                 background-color: white;
-                width: 100px;
+                width: 100%;
+                min-width: 60px;
                 height: 20px;
+                border-radius: 15px;
                 color: black;
             }
 
@@ -520,16 +537,10 @@
                 color: red;
             }
 
-            @media (max-width: 600px) {
-
-                input{
-                    font-size: large;
-                    width: 65%;
-                }
-
-                .copy{
-                    width: 40px;
-                    height: 40px;
+            @media (max-width: 500px) {
+                .ul-info-list{
+                    flex-direction: column;
+                    right: -200%;
                 }
             }
         </style>
@@ -551,9 +562,9 @@
             <div class="inputs-container">
                 <div class="list-info">
                     <h2 class="name_lista"><?php echo  $_SESSION['type_lista'][2] ?></h2>
-                    <div class="dropdown">
+                    <div class="dropdown" tabindex="0">
                         <img class="img-info" src="img/informacoes.png" alt="">
-                        <ul class="ul-info-list">
+                        <ul class="ul-info-list" >
                             <li class="li-info-list">
                                 <label for="">Nome Da Lista:</label>
                                 <input id="input_mudar_nome" class="input-mudar-nome" name="nome" type="text" value="<?php echo $_SESSION['type_lista'][2] ?>">
@@ -630,7 +641,9 @@
 
                 <?php if(isset($_SESSION['id'])): ?>
                     <div class="btns-out">
+                        <a href="">
                         <button type="button" data-submit="true" class="salvar">Salvar</button>
+                        </a>
                         <a href="selecionar_lista.php">
                             <button type="button" class="bloco">Voltar para listas</button>
                         </a>
@@ -638,7 +651,7 @@
                     </div>
                 <?php else: ?>
                     <div class="btns-out">
-                        <button type="button" data-submit="true" class="salvar">Salvar</button>
+                        <a href=""><button type="button" data-submit="true" class="salvar">Salvar</button></a>
                         <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
                     </div>
                 <?php endif ?>

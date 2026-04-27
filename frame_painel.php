@@ -25,8 +25,13 @@ require ("connector.php");
         }
 
         h1{
+            text-align: center;
             color: white;
-            margin-left: 20px;
+        }
+
+        .bem-vindo{
+            margin-left: 50px;
+            width: fit-content;
         }
 
         button{
@@ -66,6 +71,7 @@ require ("connector.php");
         .conjunto{
             margin-top: 10px;
             display: flex;
+            width: 100vw;
             margin-bottom: 20px;
             align-items: center;
             justify-content: center;
@@ -73,10 +79,12 @@ require ("connector.php");
         }
 
         h2{
+            text-align: center;
             color: white;
         }
 
         h3{
+            text-align: center;
             color: white;
         }
 
@@ -164,8 +172,9 @@ require ("connector.php");
                 margin: 5px;
             }
 
-            h1{
-                font-size: medium;
+            .bem-vindo{
+                margin: 5px;
+                max-width: 250px;
             }
 
             .info{
@@ -176,7 +185,7 @@ require ("connector.php");
     </head>
 <body class="frame">
     <header>
-        <h1>Seja bem vindo ao SecurePad</h1> 
+        <h1 class="bem-vindo">Seja bem vindo ao SecurePad</h1> 
         <button class="mostrar" onclick="mostra()">Minhas informações</button>
     </header>
 
