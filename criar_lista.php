@@ -66,6 +66,7 @@
         body{
             display: flex;
             align-items: center;
+            min-height: 100vh;
         }
         a{
             text-decoration: none;
@@ -78,7 +79,6 @@
             justify-content: center;
             margin-bottom: 20px;
             bottom: 0;
-            position: absolute;
             width: 100%;
             flex-direction: row;
             gap: 20px;
@@ -120,10 +120,10 @@
         form{
             width: 70vw;
             display: flex;
-            height: 60vh;
             gap: 15px;
+            flex: 1;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             flex-direction: column;
         }
 
@@ -165,6 +165,16 @@
         .saida{
             color: red;
         }
+
+        @media (max-width: 600px) {
+            input{
+                width: 80vw;
+            }
+
+            select{
+                width: 80vw;
+            }
+        }
     </style>
 </head>
 <body>
@@ -172,7 +182,7 @@
         <label for="">Nome:</label>
         <input type="text" name="nome" placeholder="Insira o nome da lista">
 
-        <label for="">Tipo</label>
+        <label for="">Tipo:</label>
         <select name="tipo" id="">
             <option value="<?php echo $mostra_tipo[0] ?? "linhas"; ?>"><?php echo $mostra_tipo[1] ?? "Linhas"; ?></option>
             <option value="<?php echo $nao_mostra_tipo[0] ?? "bloco"; ?>"><?php echo $nao_mostra_tipo[1] ?? "Bloco" ?></option>
@@ -185,11 +195,13 @@
         </select>
 
         <button>Criar</button>
+
+        <div class="out-buttons">
+            <a href="selecionar_lista.php" class="new-list">Voltar</a>
+            <a class="btn-sair" href="logout.php">Sair</a>
+        </div>
     </form>
-    <div class="out-buttons">
-        <a href="selecionar_lista.php" class="new-list">Voltar</a>
-        <a class="btn-sair" href="logout.php">Sair</a>
-    </div>
+    
     <p class="saida"><?php echo $mostrar ?? "" ?></p>
 </body>
 </html>

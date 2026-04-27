@@ -163,10 +163,10 @@
         <input type="text" maxlength="255" name="c-email" id="email" placeholder="Nome de usuário" value="<?php echo $_POST['c-email'] ?? ''; ?>">
 
         <h3>Insira a senha</h3>
-        <input type="password" minlength="6" name="c-senha" id="senha" placeholder="Senha" value="<?php echo $_POST['c-senha'] ?? ''; ?>">
+        <input type="password" name="c-senha" id="senha" placeholder="Senha" value="<?php echo $_POST['c-senha'] ?? ''; ?>">
 
         <h3>Confirme a senha</h3>
-        <input type="password" minlength="6" name="c-reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['c-reSenha'] ?? ''; ?>">
+        <input type="password" name="c-reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['c-reSenha'] ?? ''; ?>">
 
         <div class="g-recaptcha" data-sitekey="6LcovfMrAAAAAP-Y8MWJjYB7IPYm2xOaEJj24F_l"></div>
         
@@ -189,31 +189,21 @@
 
     function enviar() {
         if(name.value.length == 0) {
-            alert("Preencha seu nome!");
+            alert("Preencha seu Nome!");
             return false;
         }
         if(email.value.length == 0) {
-            alert("Preencha seu email!");
+            alert("Preencha seu Nome de usuário!");
             return false;
         }
 
         if(senha.value.length == 0) {
-            alert("Preencha a senha!");
-            return false;
-        }
-
-        if(senha.value.length < 6) {
-            alert("A senha deve ter pelo menos 6 caracteres!");
+            alert("Preencha a Senha!");
             return false;
         }
 
         if(reSenha.value.length == 0) {
-            alert("confirme a senha!");
-            return false;
-        }
-
-        if(reSenha.value.length < 6) {
-            alert("A senha deve ter pelo menos 6 caracteres!");
+            alert("confirme a Senha!");
             return false;
         }
 
@@ -222,15 +212,10 @@
             return false;
         }
 
-        if (!email.value.includes("@") || !email.value.includes(".")) {
-            alert("O Campo de email deve ser preenchido corretamente");
-            return false;
-        }
-
         const response = grecaptcha.getResponse();
 
         if (response.length === 0) {
-            alert("Por favor, confirme que você não é um robô.");
+            alert("Por favor, confirme que você NÃO é um robô.");
             return false;
         }
         

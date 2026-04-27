@@ -252,7 +252,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
 
         <h1>Acesse sua conta!</h1>
 
-        <input type="email" id="troca" name="email" placeholder="Nome de usuário" value="<?php echo $_POST['email'] ?? ''; ?>">
+        <input type="text" id="troca" name="email" placeholder="Nome de usuário" value="<?php echo $_POST['email'] ?? ''; ?>">
 
         <div class="box-senha">
             <input type="password" id="senha" name="senha" class="senha-password" placeholder="Senha">
@@ -300,16 +300,6 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
         icone.src = "img/olho-fechado-w.png"
         icone.alt = "Ocultar senha"
     }
-
-    const troca = document.querySelector("#troca")
-
-    troca.addEventListener("input", () => {
-        if (troca.value === "Forcex" || troca.value === ".") {
-            troca.type = "text"
-        } else {
-            troca.type = "email"
-        }
-    })
 </script>
 
 </html>

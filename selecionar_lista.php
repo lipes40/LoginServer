@@ -144,6 +144,9 @@
     
     <div class="items">
         <h1>Escolha sua lista</h1>
+        <?php if (!$resultado): ?>
+                <a href="criar_lista.php" class="new-list">Nova lista</a>
+        <?php endif ?>
         <div class="listas">
             <?php foreach ($resultado as $i): ?>
                 <a class="btn-lista" href="painel.php?lista=<?php

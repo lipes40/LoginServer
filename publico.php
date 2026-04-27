@@ -157,7 +157,8 @@ else{
 
         .buttons{
             margin-top: 100px;
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
             align-items: center;
             justify-content: center;
             gap: 20px;

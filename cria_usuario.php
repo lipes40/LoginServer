@@ -15,9 +15,6 @@
         $nome = $_POST['c-nome'];
         $email = $_POST['c-email'];
         $senha = $_POST['c-senha'];
-        if (!str_contains($email, "@") or !str_contains($email, ".") or strlen($senha) < 6) {
-            die("Error html alterado");
-        }
 
         $criptoSenha = password_hash($senha, PASSWORD_DEFAULT);
 
@@ -29,7 +26,7 @@
             $error = "Esse nome de usuário ja foi cadastrado!";
         } else {
 
-            $lista = encrypt_aes_gcm("", $senha);
+            $lista = "";
             $bloco = "";
 
             $stmt = $pdo->prepare("SELECT MAX(id) FROM usuarios");
