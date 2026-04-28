@@ -163,12 +163,21 @@ else{
         .buttons{
             margin-top: 100px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+            width: 100vw;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 2fr));
             align-items: center;
             justify-content: center;
             gap: 20px;
             bottom: 0;
         }
+        
+        a{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            text-decoration: none;
+        }
+        
     </style>
 </head>
 <body>
