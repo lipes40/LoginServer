@@ -184,6 +184,10 @@
             color: black;
         }
 
+        .salvar{
+            justify-self: center;
+        }
+
         p {
             color: white
         }
@@ -252,6 +256,7 @@
         a{
             display: flex;
             align-items: center;
+            text-decoration: none;
             justify-content: center;
         }
 
@@ -476,7 +481,7 @@
 
             <?php if(isset($_SESSION['id'])): ?>
                 <div class="btns-out">
-                    <a href=""><button class="salvar" type="button" data-submit="true">Salvar</button></a>
+                    <button class="salvar" type="button" data-submit="true">Salvar</button>
                     <a href="selecionar_lista.php">
                     <button type="button" class="add" id="adicionar">Voltar para Listas</button>
                     </a>
@@ -484,7 +489,7 @@
                 </div>
             <?php else: ?>
                 <div class="btns-out">
-                    <a href=""><button class="salvar" type="button" data-submit="true">Salvar</button></a>
+                    <button class="salvar" type="button" data-submit="true">Salvar</button>
                     <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
                 </div>
             <?php endif ?>

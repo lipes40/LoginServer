@@ -131,6 +131,11 @@ else{
             color: black;
         }
 
+        .link-imagem{
+            width: 300px;
+            height: 100%;
+        }
+
         .copy{
                 display: flex;
                 align-items: center;

@@ -61,8 +61,9 @@
 
     $texto = $_SESSION["lista"]; 
 
-    
-        
+    // var_dump($texto);
+    // die();
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['items'])){
             $lista = $_POST["items"];
@@ -191,6 +192,10 @@
                 color: black;
             }
 
+            .salvar{
+                justify-self: center;
+            }
+
             .sair{
                 background-color: #8B0000;
             }
@@ -221,6 +226,7 @@
 
             a{
                 justify-self: center;
+                text-decoration: none;
             }
 
             img{
@@ -280,7 +286,7 @@
 
             .btns-out{
                 width: 80%;
-                justify-content: space-around;
+                justify-content: center;
                 margin-top: 10px;
                 align-items: center;
                 display: grid;
@@ -641,9 +647,7 @@
 
                 <?php if(isset($_SESSION['id'])): ?>
                     <div class="btns-out">
-                        <a href="">
                         <button type="button" data-submit="true" class="salvar">Salvar</button>
-                        </a>
                         <a href="selecionar_lista.php">
                             <button type="button" class="bloco">Voltar para listas</button>
                         </a>
@@ -651,7 +655,7 @@
                     </div>
                 <?php else: ?>
                     <div class="btns-out">
-                        <a href=""><button type="button" data-submit="true" class="salvar">Salvar</button></a>
+                        <button type="button" data-submit="true" class="salvar">Salvar</button>
                         <a class="base-line" href="logout.php"><button type="button" class="sair">Voltar</button></a>
                     </div>
                 <?php endif ?>
@@ -680,11 +684,19 @@
             }
 
             if(input.value.includes("#,@LINK_IMG@,#")){
-                input.value.replace("#,@LINK_IMG@,#", "")
                 const img = document.createElement('img')
                 img.src = input.value.replace("#,@LINK_IMG@,#", "")
+                
+                img.onload = () => { 
+                    input.replaceWith(img)
+                }
+                img.onerror = () => { 
+                    input.value = input.value.replace("#,@LINK_IMG@,#", "")
+                    alert("URL de imagem inválida!")
+                    salvar()
+                }
+
                 img.className = "link-imagem"
-                input.replaceWith(img)
             }
         });
 
@@ -793,7 +805,7 @@
                 else{
                     const text = div_items.querySelector('img')
                     const input = document.createElement('input')
-                    if (text.src === window.location.href){
+                    if (text.src.includes(window.location.host)){
                         input.value = ""
                     }
                     else{
@@ -813,12 +825,10 @@
         const elementos = container.children
 
         container.querySelectorAll('.link-imagem').forEach((item) => {
-            console.log(item)
             const img_to_input = document.createElement('input')
             img_to_input.value = item.src + "#,@LINK_IMG@,#"
             img_to_input.type = "text"
             img_to_input.name = "items[]"
-            console.log(img_to_input)
             item.replaceWith(img_to_input)
         });
 

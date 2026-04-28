@@ -145,9 +145,11 @@
             color: white;
             border-radius: 15px;
             border: none;
+            font-size: large;
             padding-left: 10px;
-            height: 10%;
-            width: 30%;
+            height: 50px;
+            width: 80%;
+            max-width: 455px;
         }
 
         .div-delet{
@@ -155,6 +157,7 @@
             margin-top: 50px;
             justify-content: space-between;
             width: 80%;
+            gap: 50px;
             height: 10%;
         }
 
@@ -163,15 +166,17 @@
             border: none;
             border-radius: 15px;
             color: white;
-            width: 20%;
-            height: 100%;
+            width: 50%;
+            height: 50px;
+            max-width: 200px;
             cursor: pointer;
         }
 
 
         .a-delet{
-            width: 20%;
-            height: 100%;
+            width: 50%;
+            height: 50px;
+            max-width: 200px;
         }
 
         .p-delet{
@@ -189,17 +194,6 @@
         }
 
         @media(max-width: 600px) {
-            .input-delet{
-                width: 70%;
-            }
-
-            .btn-delet{
-                width: 40%;
-            }
-
-            .a-delet{
-                width: 40%;
-            }
         }
 
     </style>

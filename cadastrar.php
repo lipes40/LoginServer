@@ -16,6 +16,8 @@
 
         body{
             background-color: #111111;
+            width: 100vw;
+            margin-left: 0;
         }
 
         header{
@@ -41,7 +43,7 @@
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            width: 100%;
+            width: 100vw;
         }
 
         input{
@@ -50,8 +52,10 @@
             background-color: black;
             color: white;
             border: none;
-            height: 8%;
-            width: 30%;
+            min-height: 50px;
+            font-size: large;
+            max-width: 500px;
+            width: 90%;
             border-radius: 10px;
             padding-left: 5px;
         }
@@ -64,8 +68,9 @@
             background-color: #8A2BE2;
             color: white;
             border: none;
-            height: 10%;
-            width: 30%;
+            height: 50px;
+            width: 70%;
+            max-width: 400px;
             margin-top: 20px;
             border-radius: 20px;
             transition: 0.2s;
@@ -122,24 +127,13 @@
             margin-top: 18px;
         }
 
-        @media (max-width: 800px) {
-            input{
-                width: 70%;
-            }
-
-            .button{
-                width: 70%;
-            }
-
-            .button-log{
-                width: 15%;
-            }
-
+        @media (max-width: 400px) {
             header{
-                justify-content: center;
+                justify-content: space-around;
             }
 
             .button-log{
+                max-height: 40px;
                 width: 15%;
                 left: 0;
             }
@@ -150,7 +144,7 @@
 
     <header>
         <a href="index.php">
-        <button class="button-log">Fazer login</button>
+        <button id="voltar" class="button-log">Fazer login</button>
         </a>
         <h1>Crie sua conta!</h1>
     </header>
@@ -182,6 +176,17 @@
 
 </body>
 <script>
+    const voltar = document.getElementById("voltar")
+
+    if (window.innerWidth <= 600) {
+        voltar.innerText = "⬅";
+        voltar.style.fontSize = '250%'
+    }
+
+    else{
+        voltar.innerText = "Fazer Login";
+    }
+
     let name = document.getElementById("name")
     let email = document.getElementById("email")
     let senha = document.getElementById("senha")

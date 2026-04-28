@@ -135,6 +135,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
 
         h1 {
             color: white;
+            text-align: center;
             font-family: Arial, Helvetica, sans-serif;
         }
 
@@ -150,7 +151,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             justify-content: center;
             flex-direction: column;
             gap: 10px;
-            width: 35%;
+            width: 100%;
         }
 
         input {
@@ -159,8 +160,9 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             background-color: black;
             color: white;
             border: none;
-            height: 8%;
-            width: 100%;
+            height: 50px;
+            max-width: 550px;            
+            width: 90%;
             border-radius: 10px;
             padding-left: 5px;
         }
@@ -194,7 +196,8 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             align-items: center;
             height: 8%;
             position: relative;
-            width: 100%;
+            width: 91.6%;
+            max-width: 555px;
         }
 
         .entrar {
@@ -206,7 +209,8 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             color: white;
             border: none;
             height: 5%;
-            width: 100%;
+            width: 90%;
+            max-width: 555px;
             border-radius: 5px;
             transition: 0.2s;
             cursor: pointer;
@@ -236,12 +240,6 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             gap: 0;
             height: 5px;
             color: #8A2BE2;
-        }
-
-        @media (max-width: 600px) {
-            .box-center {
-                width: 70%;
-            }
         }
     </style>
 

@@ -21,16 +21,8 @@
             $error = "Preencha sua nova senha!";
         }
 
-        elseif(strlen($_POST['newSenha']) < 6) {
-            $error = "A senha deve ter pelo menos 6 caracteres!";
-        }
-
         elseif(strlen($_POST['reSenha']) == 0) {
             $error = "Confirme sua senha!";
-        }
-
-        elseif(strlen($_POST['reSenha']) < 6) {
-            $error = "A senha deve ter pelo menos 6 caracteres!";
         }
 
         elseif($_POST['newSenha'] != $_POST['reSenha']) {
@@ -118,6 +110,7 @@
             display: flex;
             justify-content: center;
             max-height: 60px;
+            width: 100vw;
             position: relative;
             align-items: center;
         }
@@ -151,8 +144,10 @@
             background-color: black;
             color: white;
             border: none;
-            height: 8%;
-            width: 30%;
+            height: 60px;
+            font-size: large;
+            width: 80%;
+            max-width: 500px;
             border-radius: 10px;
             padding-left: 5px;
         }
@@ -165,7 +160,7 @@
             background-color: #8A2BE2;
             color: white;
             border: none;
-            height: 10%;
+            height: 50px;
             width: 30%;
             margin-top: 20px;
             border-radius: 20px;
@@ -183,12 +178,12 @@
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             position: absolute; 
-            left: 20px;
             align-items: center;
             align-self: center;
             justify-content: center;
             background-color: #8A2BE2;
             color: white;
+            left: 0;
             border: none;
             width: 15%;
             min-width: 40px;
@@ -196,6 +191,7 @@
             cursor: pointer;
             border-radius: 20px;
             transition: 0.2s;
+            padding-bottom: 5px;
         }
 
         .button-log:hover{
@@ -214,31 +210,14 @@
             margin: 5px 0;
         }
 
-        @media (max-width: 600px) {
-            input{
-                width: 70%;
-            }
-
-            .button{
-                width: 70%;
-            }
-
+        @media (max-width: 400px) {
             .button-log{
-                align-items: center;
-                justify-content: center;
-                display: inline-flex;
-                left: 0;
-                margin-top: 5px;
-                position: relative;
-                max-height: 3%;
-                width: 20%;
-                padding-bottom: 5px;
+                max-width: 20px;
             }
-        }
 
-        @media (max-width: 350px) {
             h1{
-                font-size: 150%;
+                text-align: center;
+                max-width: 80%;
             }
         }
 
@@ -257,10 +236,10 @@
             <input type="password" name="senha" id="senha" placeholder="Senha" value="<?php echo $_POST['senha'] ?? ''; ?>">
 
             <h3>Insira a nova senha</h3>
-            <input type="password" minlength="6" name="newSenha" id="newSenha" placeholder="Nova Senha" value="<?php echo $_POST['newSenha'] ?? ''; ?>">
+            <input type="password" name="newSenha" id="newSenha" placeholder="Nova Senha" value="<?php echo $_POST['newSenha'] ?? ''; ?>">
 
             <h3>Confirme a senha</h3>
-            <input type="password" minlength="6" name="reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['reSenha'] ?? ''; ?>">
+            <input type="password" name="reSenha" id="reSenha" placeholder="Confirme a Senha" value="<?php echo $_POST['reSenha'] ?? ''; ?>">
 
             <h3 class="error"><?php echo $error; ?></h3>
 
