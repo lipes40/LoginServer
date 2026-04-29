@@ -7,8 +7,9 @@ session_start();
 
 $slug = trim($_SERVER['REQUEST_URI'], '/');
 $slug = str_replace("login", "", $slug);
+$slug = str_replace("?i=1", "", $slug);
 
-if ($slug != "" && $slug != "index.php" && $slug != "?i=1"){
+if ($slug != "" && $slug != "index.php"){
     $slug = str_replace("/", "", $slug);
     header("Location: publico.php?lista=" . $slug);
     exit();
