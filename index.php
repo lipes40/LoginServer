@@ -8,7 +8,7 @@ session_start();
 $slug = trim($_SERVER['REQUEST_URI'], '/');
 $slug = str_replace("login", "", $slug);
 
-if ($slug != "" && $slug != "/index.php"){
+if ($slug != "" && $slug != "index.php" && $slug != "?i=1"){
     $slug = str_replace("/", "", $slug);
     header("Location: publico.php?lista=" . $slug);
     exit();
@@ -24,7 +24,7 @@ $error = '';
 if (isset($_POST['email']) && isset($_POST['senha'])) {
 
     if (strlen($_POST['email']) == 0) {
-        $error = "Preencha seu email!";
+        $error = "Preencha seu Nome de usuário!";
     } elseif (strlen($_POST['senha']) == 0) {
         $error = "Preencha sua senha!";
     } else {
@@ -90,10 +90,10 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
 
                 exit;
             } else {
-                $error = "Falha ao logar! email ou senha incorretos!";
+                $error = "Falha ao logar! Nome de usuário ou senha incorretos!";
             }
         } else {
-            $error = "Falha ao logar! email ou senha incorretos!";
+            $error = "Falha ao logar! Nome de usuário ou senha incorretos!";
         }
     }
 }
@@ -194,7 +194,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
         .box-senha {
             display: flex;
             align-items: center;
-            height: 8%;
+            height: 50px;
             position: relative;
             width: 91.6%;
             max-width: 555px;
@@ -208,7 +208,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])) {
             background-color: #8A2BE2;
             color: white;
             border: none;
-            height: 5%;
+            height: 50px;
             width: 90%;
             max-width: 555px;
             border-radius: 5px;
