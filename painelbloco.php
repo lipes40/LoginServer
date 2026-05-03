@@ -412,6 +412,12 @@
                 right: -200%;
             }
         }
+
+        @media (pointer: coarse) {
+            ul{
+                margin-top: 10px;
+            }
+        }
     </style>
 
 </head>

@@ -431,7 +431,6 @@
 
             ul{
                 z-index: 10;
-                margin-top: 10px;
                 position: absolute;
                 top: 100%;
                 right: -100%;
@@ -548,6 +547,12 @@
                 .ul-info-list{
                     flex-direction: column;
                     right: -200%;
+                }
+            }
+
+            @media (pointer: coarse) {
+                ul{
+                    margin-top: 10px;
                 }
             }
         </style>
