@@ -431,6 +431,7 @@
 
             ul{
                 z-index: 10;
+                margin-top: 10px;
                 position: absolute;
                 top: 100%;
                 right: -100%;
@@ -620,19 +621,19 @@
                         ...
                         <ul>
                             <li>
-                                <button type="button" class='deletar' title="Deletar"><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
-                            </li>
-                            <li>
-                                <button type="button" class="key" title="Esconder conteúdo"><img src="img/key.png"></button>
-                            </li>
-                            <li>
-                                <button type="button" class="imagem"><img src="img/imagem.png"></button>
+                                <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
                             </li>
                             <li>
                                 <button type="button" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
                             </li>
                             <li>
-                                <button id="divisoria" type="button" title="Adicionar Divisória" class='divisoria'><img class="icon-divisoria" src="img/divisoria.png"></button>
+                                <button type="button" class="imagem"><img src="img/imagem.png"></button>
+                            </li>
+                            <li>
+                                <button type="button" class="key" title="Esconder conteúdo"><img src="img/key.png"></button>
+                            </li>
+                            <li>
+                                <button type="button" class='deletar' title="Deletar"><img class="icon-lixeira" src="img/lixeira-branca.png"></button>
                             </li>
                         </ul>
                     </div>
