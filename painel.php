@@ -25,9 +25,9 @@
         $stmt->execute([$_SESSION['id'], $name_list]);
     }
     else{
-        $sql = "SELECT * FROM listas WHERE nome_lista = ?";
+        $sql = "SELECT * FROM listas WHERE nome_lista = ? AND visibilidade = ? AND publico_editavel = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$name_list]);
+        $stmt->execute([$name_list, 'publico', 'editavel']);
     }
 
     $_SESSION['type_lista'] = $stmt->fetch();
