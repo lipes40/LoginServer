@@ -526,6 +526,14 @@
                 border: none;
             }
 
+            .ativo{
+                background-color: #8B0000;
+            }
+
+            .ativo:hover{
+                background-color: #7B0000;
+            }
+
             .input-mudar-nome{
                 background-color: white;
                 width: 100%;
@@ -884,9 +892,11 @@
         const botao_deletar = document.getElementById('button_deletar');
         if (document.getElementById('input_delete').value == "<?php echo $_SESSION['type_lista'][2]; ?>"){
             botao_deletar.textContent = "Deletar"
+            botao_deletar.classList.add('ativo')
         }
         else{
             botao_deletar.textContent = "Voltar"
+            botao_deletar.classList.remove('ativo')
         }
     })
 </script>
