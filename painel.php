@@ -63,6 +63,7 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['items'])){
+            var_dump($_POST['items']);
 
             $list_edit = $_POST['editavel'] ?? "nao editavel";
 
@@ -114,7 +115,6 @@
                 var_dump($lista);
 
                 $lista = implode("#,@SEPARATOR_LINES@,#", $lista);
-                die(var_dump($lista));
             }
             else{
                 $lista = str_replace("#,@SECRET_PASSWORD@,#", "", $lista);
@@ -923,11 +923,19 @@
 
         if(container.querySelector("hr")){
             let cont = 0
+            let cont_input = 1
 
             while(cont < elementos.length){
                 if(elementos[cont].tagName == "HR"){
                     input = elementos[cont-1].querySelector('input')
                     input.value += "#,@LINE_DIVIDER@,#"
+                }
+                if (elementos[cont].tagName == "DIV"){
+                    console.log(elementos[cont_input])
+                    console.log(elementos[cont].querySelector('p').innerHTML)
+                    elementos[cont].querySelector('input').name = "items[" + cont_input + "]"
+                    elementos[cont].querySelector('p').innerHTML = cont_input
+                    cont_input++
                 }
                 
                 cont++
