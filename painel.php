@@ -61,16 +61,47 @@
 
     $texto = $_SESSION["lista"]; 
 
-    // var_dump($texto);
-    // die();
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['items'])){
-            $lista = $_POST["items"];
 
             $list_edit = $_POST['editavel'] ?? "nao editavel";
 
             $novo_nome = trim($_POST['nome']);
+
+            if (isset($_FILES['items'])){
+                foreach($_FILES['items']['tmp_name'] as $index => $tmp){
+
+                    $data = [
+                        "file" => new CURLFile($tmp),
+                        "upload_preset" => 'imagens_securepad'
+                    ];
+
+                    $ch = curl_init();
+
+                    curl_setopt_array($ch, [
+                        CURLOPT_URL => 
+                        "https://api.cloudinary.com/v1_1/do4qymleb/image/upload",
+                        
+                        CURLOPT_POST => true,
+
+                        CURLOPT_RETURNTRANSFER => true,
+
+                        CURLOPT_SSL_VERIFYPEER => false,
+
+                        CURLOPT_POSTFIELDS => $data
+                    ]);
+
+                    $response = curl_exec($ch);
+
+                    curl_close($ch);
+
+                    $resultado = json_decode($response, true);
+
+                    array_splice($_POST['items'], $index-1, 0, $resultado['secure_url'] . "#,@LINK_IMG@,#");
+                }
+            }
+
+            $lista = $_POST["items"];
 
             $estado = $_POST['visibilidade'];
             $novo_tipo = $_POST['tipo'];
@@ -80,7 +111,10 @@
             if ($novo_tipo == 'linhas') {
                 $lista = array_map('trim', $lista);
 
+                var_dump($lista);
+
                 $lista = implode("#,@SEPARATOR_LINES@,#", $lista);
+                die(var_dump($lista));
             }
             else{
                 $lista = str_replace("#,@SECRET_PASSWORD@,#", "", $lista);
@@ -578,7 +612,7 @@
             </form>
         </div>
 
-        <form id="envia" method="POST" action="">
+        <form id="envia" enctype="multipart/form-data" method="POST" action="">
             <div class="inputs-container">
                 <div class="list-info">
                     <h2 class="name_lista"><?php echo  $_SESSION['type_lista'][2] ?></h2>
@@ -627,7 +661,7 @@
                     <p class="numerador"><?php $cont ++;
                     echo $cont ?></p>
 
-                    <input type="text" placeholder="Adicione algo" name="items[]" value="<?php {echo htmlspecialchars(trim($item));}?>">
+                    <input class="input-lista" type="text" placeholder="Adicione algo" name="items[<?php echo $cont ?>]" value="<?php {echo htmlspecialchars(trim($item));}?>">
                     <button type="button" class='copy'><img class="icon-clipboard" title="Copiar" src="img/clipboard.png"></button>
 
                     <div class="dropdown">
@@ -680,7 +714,6 @@
 
         // Modificações na lista
 
-
         const container = document.getElementById('inputs-container');
         const btnAdicionar = document.getElementById('adicionar')
         const btnDeletar = document.getElementById('deletar')
@@ -702,7 +735,9 @@
                 img.src = input.value.replace("#,@LINK_IMG@,#", "")
                 
                 img.onload = () => { 
-                    input.replaceWith(img)
+                    input.replaceWith(img);
+                    item.children[2].remove();
+                    item.children[2].style.marginLeft = "10px";
                 }
                 img.onerror = () => { 
                     input.value = input.value.replace("#,@LINK_IMG@,#", "")
@@ -717,7 +752,6 @@
         btnAdicionar.addEventListener('click', (event) => {
             const input = document.createElement('input');
             const last = event.target.previousElementSibling;
-            console.log(last)
             let numero = 1
 
             const html = `
@@ -750,6 +784,37 @@
             salvar()
         });
 
+        // Copiar para área de tranferência
+
+        async function copiar_area_tranferencia(item, tipo) {
+            if (tipo === 'texto'){
+                await navigator.clipboard.writeText(item.value)
+            }
+            else{
+                const response = await fetch(item.src);
+                const blob = await response.blob();
+
+                // Tranforma imagem em png
+
+                const bitmap = await createImageBitmap(blob);
+                const canvas = document.createElement('canvas');
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0);
+                const pngBlob = await new Promise(resolve => 
+                    canvas.toBlob(resolve, 'image/png')
+                );
+
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/png': pngBlob
+                    })
+                ])
+            }
+        }
+
         container.addEventListener('click', (event) => {
             const botao_deletar = event.target.closest('.deletar');
             const botao_copy = event.target.closest('.copy')
@@ -765,9 +830,17 @@
 
             if (botao_copy) {
                 const div_items = event.target.closest('.items')
+                
 
                 let input_btn = div_items.querySelector('input')
-                navigator.clipboard.writeText(input_btn.value)
+                if (input_btn === null){
+                    let img_btn = div_items.querySelector('img')
+                    copiar_area_tranferencia(img_btn, 'imagem') 
+                }
+                else{
+                    copiar_area_tranferencia(input_btn, 'texto')
+                }
+                
             }
 
             if (botao_linha) {
@@ -778,7 +851,7 @@
                 const html = `
                 <div class="items">
                     <p class="numerador">${numero}</p>
-                    <input type="text", name="items[]", placeholder="Adicione algo" style="width: 90%;">
+                    <input type="text", name="items[` + numero + `]", placeholder="Adicione algo" style="width: 90%;">
                     <button type="button" class="copy">
                         <img class="icon-clipboard" title="Copiar" src="img/clipboard.png">
                     </button>...
@@ -840,9 +913,11 @@
 
         container.querySelectorAll('.link-imagem').forEach((item) => {
             const img_to_input = document.createElement('input')
+            let num = item.parentElement.querySelector('p').innerText
+
             img_to_input.value = item.src + "#,@LINK_IMG@,#"
             img_to_input.type = "text"
-            img_to_input.name = "items[]"
+            img_to_input.name = `items[${num}]`
             item.replaceWith(img_to_input)
         });
 
@@ -899,5 +974,21 @@
             botao_deletar.classList.remove('ativo')
         }
     })
+
+    const inputs = document.querySelectorAll('.input-lista')
+    inputs.forEach(item => {
+        item.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault()
+                
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end)
+                this.selectionStart = this.selectionEnd = start + 4
+            }
+        })
+    })
+
+    
 </script>
 </html> 
