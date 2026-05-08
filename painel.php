@@ -63,8 +63,6 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         if (isset($_POST['items'])){
-            var_dump($_POST['items']);
-
             $list_edit = $_POST['editavel'] ?? "nao editavel";
 
             $novo_nome = trim($_POST['nome']);
@@ -111,9 +109,6 @@
 
             if ($novo_tipo == 'linhas') {
                 $lista = array_map('trim', $lista);
-
-                var_dump($lista);
-
                 $lista = implode("#,@SEPARATOR_LINES@,#", $lista);
             }
             else{
@@ -372,6 +367,54 @@
             .imagem:hover{
                 background: none;
             }
+
+            .upload{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                background: none;
+                width: 50px;
+                height: 50px;
+                margin: 0;
+            }   
+
+            .upload:hover{
+                background: none;
+            }
+
+            .link{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                background: none;
+                width: 50px;
+                height: 50px;
+                margin: 0;
+            }
+
+            .link:hover{
+                background: none;
+            }
+            
+            .opcoes-img{
+                display: none;
+            }
+
+            .opcoes-img.aparecer{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                background-color: #7B68EE;
+                width: 70%;
+                align-self: center;
+                border-radius: 15px;
+                justify-self: center;
+            }
+
+            
 
             .copy{
                 display: flex;
@@ -675,6 +718,10 @@
                             </li>
                             <li>
                                 <button type="button" class="imagem"><img src="img/imagem.png"></button>
+                                <div class="opcoes-img">
+                                    <button type="button" class="link"><img src="img/link.png"></button>
+                                    <button type="button" class="upload"><img src="img/upload.png"></button>
+                                </div>
                             </li>
                             <li>
                                 <button type="button" class="key" title="Esconder conteúdo"><img src="img/key.png"></button>
@@ -822,6 +869,8 @@
             const botao_linha = event.target.closest('.linha')
             const botao_key = event.target.closest(".key")
             const botao_imagem = event.target.closest(".imagem")
+            const botao_link = event.target.closest(".link")
+            const botao_upload = event.target.closest(".upload")
 
             if (botao_deletar) {
                 const deletar = event.target.closest('.items')
@@ -884,6 +933,19 @@
             }
 
             if (botao_imagem) {
+                const opcoes = botao_imagem.parentElement.querySelector('div')
+                if (opcoes.classList.length === 1){
+                    opcoes.classList.add("aparecer")
+                }
+                else{
+                    opcoes.classList.remove("aparecer")
+                }
+            }
+
+            if (botao_link) {
+                const opcoes = botao_link.parentElement
+                opcoes.classList.remove("aparecer")
+
                 const div_items = event.target.closest('.items')
                 if (div_items.querySelector('input')){
                     div_items.querySelector('input').value += "#,@LINK_IMG@,#"
@@ -903,6 +965,24 @@
                     input.name = "items[]"
                     text.replaceWith(input)
                 }
+            }
+
+            if (botao_upload) {
+                const opcoes = botao_upload.parentElement
+                opcoes.classList.remove("aparecer")
+
+                const div_items = event.target.closest('.items')
+                const item = div_items.children[1]
+                const input_file = document.createElement('input')
+                input_file.className = "input-lista"
+                input_file.type = "file"
+                input_file.placeholder = "Adicione algo"
+                input_file.name = "items[" + div_items.querySelector('p').innerHTML + "]"
+                input_file.accept = "image/*"
+
+                item.replaceWith(input_file)
+
+                input_file.addEventListener('change', salvar)
             }
         });
 
