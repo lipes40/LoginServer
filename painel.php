@@ -189,6 +189,10 @@
             margin: 0;
             font-family: "arial", sans-serif;
             }
+
+            html{
+                background-color: #111111;
+            }
         
             p {
                 color: white
@@ -645,7 +649,7 @@
     </head>
     <?php if (isset($_SESSION['id'])){ require ("frame_painel.php"); } ?>
 
-    <body class="principal">
+    <body id="principal" class="principal">
         <div id="certeza_deletar" class="certeza-deletar">
             <form method="POST" class="form-delete" action="">
                 <h1>Tem certeza que deseja deletar a lista: <?php echo $_SESSION['type_lista'][2] ?>?</h1>
@@ -1011,8 +1015,6 @@
                     input.value += "#,@LINE_DIVIDER@,#"
                 }
                 if (elementos[cont].tagName == "DIV"){
-                    console.log(elementos[cont_input])
-                    console.log(elementos[cont].querySelector('p').innerHTML)
                     elementos[cont].querySelector('input').name = "items[" + cont_input + "]"
                     elementos[cont].querySelector('p').innerHTML = cont_input
                     cont_input++
@@ -1029,6 +1031,8 @@
         });
 
         document.getElementById("envia").submit()
+
+        document.getElementById('principal').remove()
     }
 
     <?php if($_SESSION['type_lista'][5] == "publico"): ?>

@@ -156,6 +156,10 @@
     <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
     
     <style>
+        html{
+            background-color: #111111;
+        }
+            
         body{
             background-color: #111111;
         }
@@ -421,7 +425,7 @@
     </style>
 
 </head>
-<body class="frame">
+<body id="principal" class="frame">
     <div id="certeza_deletar" class="certeza-deletar">
             <form method="POST" class="form-delete" action="">
                 <h1>Tem certeza que deseja deletar a lista: <?php echo $_SESSION['type_lista'][2] ?>?</h1>
@@ -554,6 +558,8 @@
         <?php endif ?>
 
         document.getElementById("envia").submit()
+
+        document.getElementById('principal').remove()
     }
 
     document.getElementById('input_delete').addEventListener('input', () => {
