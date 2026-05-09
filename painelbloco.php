@@ -557,7 +557,7 @@
             }
         <?php endif ?>
 
-        document.getElementById("envia").submit()
+        // document.getElementById("envia").submit()
 
         new_body = document.createElement('body');
         new_body.style.height = "100vh";
@@ -567,7 +567,7 @@
         new_body.style.justifyContent = "center";
 
         h1 = document.createElement('h1');
-        h1.color = "white";
+        h1.style.color = "white";
         h1.textContent = "Salvando..."
         
         // Adicinando animação no h1 de salvando

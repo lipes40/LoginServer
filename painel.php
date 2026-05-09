@@ -1044,7 +1044,7 @@
         new_body.style.justifyContent = "center";
 
         h1 = document.createElement('h1');
-        h1.color = "white";
+        h1.style.color = "white";
         h1.textContent = "Salvando..."
         
         // Adicinando animação no h1 de salvando
