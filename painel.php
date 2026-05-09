@@ -721,10 +721,10 @@
                                 <button type="button" id="linha" title="Nova linha" type="button" class='linha'><img class="icon-input" src="img/input.png"></button>
                             </li>
                             <li>
-                                <button type="button" class="imagem"><img src="img/imagem.png"></button>
+                                <button type="button" title="Adicionar Imagem" class="imagem"><img src="img/imagem.png"></button>
                                 <div class="opcoes-img">
-                                    <button type="button" class="link"><img src="img/link.png"></button>
-                                    <button type="button" class="upload"><img src="img/upload.png"></button>
+                                    <button type="button" title="Via URL" class="link"><img src="img/link.png"></button>
+                                    <button type="button" title="Via Upload" class="upload"><img src="img/upload.png"></button>
                                 </div>
                             </li>
                             <li>
