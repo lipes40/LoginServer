@@ -557,7 +557,7 @@
             }
         <?php endif ?>
 
-        // document.getElementById("envia").submit()
+        document.getElementById("envia").submit()
 
         new_body = document.createElement('body');
         new_body.style.height = "100vh";
