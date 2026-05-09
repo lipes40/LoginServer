@@ -1030,9 +1030,39 @@
             }
         });
 
+        // Envia o Form para salvar
+
         document.getElementById("envia").submit()
 
-        document.getElementById('principal').remove()
+        // Cria a tela de carregamento e substitui ela pela tela antiga
+
+        new_body = document.createElement('body');
+        new_body.style.height = "100vh";
+        new_body.style.width = "100vw";
+        new_body.style.display = "flex";
+        new_body.style.alignItems = "center";
+        new_body.style.justifyContent = "center";
+
+        h1 = document.createElement('h1');
+        h1.color = "white";
+        h1.textContent = "Salvando..."
+        
+        // Adicinando animação no h1 de salvando
+
+        const pontos = ['', '.', '..', '...'];
+        let i = 0
+
+        setInterval(() => {
+            h1.textContent = "Salvando" + pontos[i];
+            i++
+            if (i >= 4){
+                i = 0
+            }
+        }, 250)
+
+        new_body.appendChild(h1);
+
+        document.getElementById('principal').replaceWith(new_body)
     }
 
     <?php if($_SESSION['type_lista'][5] == "publico"): ?>
