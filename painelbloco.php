@@ -108,7 +108,6 @@
             $nome_existente = $stmt->fetch();
 
             if(!$nome_existente || $nome_existente[0] == $_SESSION['type_lista'][0]){
-
                 if(isset($_SESSION['id'])){
                     
                     $sql = 'UPDATE listas SET nome_lista = ?, lista = ?, tipo = ?, visibilidade = ?, publico_editavel = ? WHERE id = ?';
@@ -186,6 +185,14 @@
             transform: scale(1.05);
             background-color: #7B68EE;
             color: black;
+        }
+
+        .ativo{
+            background-color: #8B0000;
+        }
+
+        .ativo:hover{
+            background-color: #7B0000;
         }
 
         .salvar{
@@ -514,23 +521,17 @@
 
 </body>
 <script>
-    const checkbox = document.getElementById('checkbox')
-    const text = document.getElementById("text")
 
     <?php if($_SESSION['type_lista'][6] == "nao editavel" && $_SESSION['type_lista'][5] == "publico"): ?>
 
         if(text.innerHTML.includes("#,@LINK_REDIRECT@,#")){
-            text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
-            checkbox.checked = true
+            document.getElementById("text").value = text.value.replace("#,@LINK_REDIRECT@,#", "")
+            document.getElementById('checkbox').checked = true
         }
 
         checkbox.addEventListener('change', salvar)
 
     <?php endif ?>
-
-    if(text.innerHTML.includes("#,@LINK_REDIRECT@,#")){
-            text.innerHTML = text.innerHTML.replace("#,@LINK_REDIRECT@,#", "")
-    }
 
     const div_deletar = document.getElementById('certeza_deletar');
 
@@ -551,11 +552,16 @@
     <?php endif ?>
     
     function salvar() {
+
         <?php if($_SESSION['type_lista'][6] == "nao editavel" && $_SESSION['type_lista'][5] == "publico"): ?>
-            if (checkbox.checked){
-                text.innerHTML += "#,@LINK_REDIRECT@,#"
+            if (document.getElementById('checkbox').checked && !document.getElementById('edit_public').checked){
+                document.getElementById("text").value += "#,@LINK_REDIRECT@,#"
             }
         <?php endif ?>
+
+        if (document.getElementById('visibilidade').value == 'privado'){
+            document.getElementById("text").value = text.value.replace("#,@LINK_REDIRECT@,#", "")
+        }
 
         document.getElementById("envia").submit()
 
@@ -592,8 +598,10 @@
         const botao_deletar = document.getElementById('button_deletar');
         if (document.getElementById('input_delete').value == "<?php echo $_SESSION['type_lista'][2]; ?>"){
             botao_deletar.textContent = "Deletar"
+            botao_deletar.classList.add('ativo')
         }
         else{
+            botao_deletar.classList.remove('ativo')
             botao_deletar.textContent = "Voltar"
         }
     })
