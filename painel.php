@@ -59,10 +59,17 @@
 
     $cont = 0;
 
-    $texto = $_SESSION["lista"]; 
+    $texto = $_SESSION["lista"];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        if (isset($_POST['items'])){
+        if (isset($_POST['items']) || isset($_FILES['items'])){
+            if (!isset($_POST['items'])){
+                $lista = [];
+            }
+            else{
+                $lista = $_POST['items'];
+            }
+
             $list_edit = $_POST['editavel'] ?? "nao editavel";
 
             $novo_nome = trim($_POST['nome']);
@@ -70,42 +77,58 @@
             if (isset($_FILES['items'])){
                 foreach($_FILES['items']['tmp_name'] as $index => $tmp){
 
-                    $data = [
-                        "file" => new CURLFile($tmp),
-                        "upload_preset" => 'imagens_securepad'
-                    ];
+                    $data = new CURLFile($tmp);
+
+                    $cloud_name = "do4qymleb";
+                    $api_key = "569164367864599";
+                    $api_secret = "_xDcLe8N_HbRZh-XWvljczWJ8JE";
+
+                    $timestamp = time();
+                    $signature = sha1("timestamp=$timestamp" . $api_secret);
+
+                    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/upload";
 
                     $ch = curl_init();
 
+                    // die(var_dump($_FILES['items']));
+
                     curl_setopt_array($ch, [
-                        CURLOPT_URL => 
-                        "https://api.cloudinary.com/v1_1/do4qymleb/image/upload",
+                        CURLOPT_URL => $url,
                         
                         CURLOPT_POST => true,
 
                         CURLOPT_RETURNTRANSFER => true,
 
-                        CURLOPT_SSL_VERIFYPEER => false,
+                        CURLOPT_SSL_VERIFYPEER => true,
 
-                        CURLOPT_POSTFIELDS => $data
-                    ]);
+                        CURLOPT_POSTFIELDS => [
+                            'file' => $data,
+                            'timestamp' => $timestamp,
+                            'api_key' => $api_key,
+                            'signature' => $signature,
+                            ],
+                    ]);  
 
                     $response = curl_exec($ch);
+
+                    if ($response === false) {
+                        file_put_contents('cloudinary_log.txt', curl_error($ch));
+                        exit;
+                    }
 
                     curl_close($ch);
 
                     $resultado = json_decode($response, true);
-
-                    array_splice($_POST['items'], $index-1, 0, $resultado['secure_url'] . "#,@LINK_IMG@,#");
+                    
+                    array_splice($lista, $index-1, 0, $resultado['secure_url'] . "#,@LINK_IMG@,#");
                 }
             }
-
-            $lista = $_POST["items"];
 
             $estado = $_POST['visibilidade'];
             $novo_tipo = $_POST['tipo'];
 
             // Formata a lista pro jeito do banco de dados
+
 
             if ($novo_tipo == 'linhas') {
                 $lista = array_map('trim', $lista);
@@ -986,7 +1009,7 @@
 
                 item.replaceWith(input_file)
 
-                input_file.addEventListener('change', salvar)
+                // input_file.addEventListener('change', salvar)
             }
         });
 
